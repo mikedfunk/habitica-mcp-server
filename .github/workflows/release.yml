@@ -51,11 +51,19 @@ jobs:
         run: |
           sed -i "s/version: '[0-9]\+\.[0-9]\+\.[0-9]\+'/version: '${{ github.event.inputs.version }}'/" src/index.ts
       
+      - name: Update README.md with version tag
+        run: |
+          sed -i 's|"args": \["github:mikedfunk/habitica-mcp-server"\]|"args": ["github:mikedfunk/habitica-mcp-server#v${{ github.event.inputs.version }}"]|g' README.md
+
+      - name: Update README.zh-CN.md with version tag
+        run: |
+          sed -i 's|"args": \["github:mikedfunk/habitica-mcp-server"\]|"args": ["github:mikedfunk/habitica-mcp-server#v${{ github.event.inputs.version }}"]|g' README.zh-CN.md
+
       - name: Commit version bump
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add package.json src/index.ts
+          git add package.json src/index.ts README.md README.zh-CN.md
           git commit -m "chore: release v${{ github.event.inputs.version }}"
           git push
       
