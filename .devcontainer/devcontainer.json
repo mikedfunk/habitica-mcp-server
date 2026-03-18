@@ -4,7 +4,7 @@
   "features": {
     "ghcr.io/rails/devcontainer/features/bun:1": {}
   },
-  "postCreateCommand": "bun install",
+  "postCreateCommand": "bun install --frozen-lockfile || bun install",
   "postStartCommand": "git config --global --add safe.directory /workspaces/habitica-mcp-server",
   "customizations": {
     "vscode": {
