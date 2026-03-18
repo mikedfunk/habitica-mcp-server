@@ -1,30 +1,32 @@
 {
   "name": "habitica-mcp-server",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Model Context Protocol server for Habitica API integration. Enable AI assistants to manage your Habitica tasks, habits, pets, and rewards through natural language.",
-  "main": "index.js",
+  "main": "dist/index.js",
   "type": "module",
   "bin": {
-    "habitica-mcp-server": "./index.js"
+    "habitica-mcp-server": "./dist/index.js"
   },
   "scripts": {
-    "start": "node index.js",
-    "dev": "node --watch index.js",
-    "test": "echo \"No tests specified\" && exit 0",
-    "publish-check": "node scripts/publish-check.js",
-    "prepublishOnly": "npm run publish-check"
+    "build": "bun build src/index.ts --outdir dist --target node --format esm",
+    "start": "bun run dist/index.js",
+    "dev": "bun --watch src/index.ts",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "publish-check": "bun run scripts/publish-check.js",
+    "prepublishOnly": "bun run build && bun run publish-check"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18.0.0",
+    "bun": ">=1.0.0"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.5.0",
-    "axios": "^1.6.0",
     "zod": "^3.22.0"
   },
   "keywords": [
     "mcp",
-    "habitica", 
+    "habitica",
     "productivity",
     "habits",
     "ai",
@@ -41,17 +43,16 @@
     "email": "breakerr@qq.com"
   },
   "license": "MIT",
-  "homepage": "https://github.com/ibreaker/habitica-mcp-server#readme",
+  "homepage": "https://github.com/mikedfunk/habitica-mcp-server#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ibreaker/habitica-mcp-server.git"
+    "url": "git+https://github.com/mikedfunk/habitica-mcp-server.git"
   },
   "bugs": {
-    "url": "https://github.com/ibreaker/habitica-mcp-server/issues"
+    "url": "https://github.com/mikedfunk/habitica-mcp-server/issues"
   },
   "files": [
-    "index.js",
-    "i18n.js",
+    "dist/",
     "README.md",
     "README.zh-CN.md",
     "LICENSE",
@@ -60,4 +61,4 @@
   "publishConfig": {
     "access": "public"
   }
-} 
+}
