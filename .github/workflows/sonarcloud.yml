@@ -17,6 +17,10 @@ jobs:
       - name: Run tests with coverage
         run: bunx c8 --reporter=lcov --reporter=text bun test
         continue-on-error: true
+      - name: Check coverage file
+        run: |
+          ls -la coverage/ || echo "No coverage directory"
+          cat coverage/lcov.info | head -20 || echo "No lcov.info file"
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v7.0.0
         env:
