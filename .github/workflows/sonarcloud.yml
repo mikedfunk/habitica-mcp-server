@@ -1,19 +1,21 @@
-name: SonarCloud
+name: Build
 on:
   push:
     branches: [main]
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
-  sonarcloud:
+  sonarqube:
+    name: SonarQube
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - uses: oven-sh/setup-bun@v2
       - run: bun install
-      - run: bun test --coverage || true
-      - uses: SonarSource/sonarcloud-github-action@master
+      - run: bun test --coverage
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
