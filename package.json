@@ -2,14 +2,14 @@
   "name": "habitica-mcp-server",
   "version": "0.0.6",
   "description": "Model Context Protocol server for Habitica API integration. Enable AI assistants to manage your Habitica tasks, habits, pets, and rewards through natural language.",
-  "main": "dist/index.js",
+  "main": "src/index.ts",
   "type": "module",
   "bin": {
-    "habitica-mcp-server": "./dist/index.js"
+    "habitica-mcp-server": "./src/index.ts"
   },
   "scripts": {
     "build": "bun build src/index.ts --outdir dist --target node --format esm",
-    "start": "bun run dist/index.js",
+    "start": "bun src/index.ts",
     "dev": "bun --watch src/index.ts",
     "test": "bun test",
     "typecheck": "tsc --noEmit",
@@ -52,7 +52,7 @@
     "url": "https://github.com/mikedfunk/habitica-mcp-server/issues"
   },
   "files": [
-    "dist/",
+    "src/",
     "README.md",
     "README.zh-CN.md",
     "LICENSE",
