@@ -32,7 +32,7 @@ if (!HABITICA_USER_ID || !HABITICA_API_TOKEN) {
 const server = new Server(
   {
     name: 'habitica-mcp-server',
-    version: '0.2.2',
+    version: '0.2.3',
   },
   {
     capabilities: {
