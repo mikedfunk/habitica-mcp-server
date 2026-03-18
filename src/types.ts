@@ -78,6 +78,9 @@ export interface HabiticaUser {
       email?: string;
     };
   };
+  preferences?: {
+    disableClasses?: boolean;
+  };
   notifications?: HabiticaNotification[];
 }
 

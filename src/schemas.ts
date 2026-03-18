@@ -4,6 +4,26 @@ export const TaskTypeSchema = z.enum(['habit', 'daily', 'todo', 'reward']);
 export const TaskListTypeSchema = z.enum(['habits', 'dailys', 'todos', 'rewards']);
 export const DirectionSchema = z.enum(['up', 'down']);
 export const StatTypeSchema = z.enum(['str', 'int', 'con', 'per']);
+export const SpellIdSchema = z.enum([
+  // Warrior skills
+  'defensiveStance',
+  'valorousPresence',
+  'intimidate',
+  // Mage skills
+  'fireball',
+  'etherealSurge',
+  'earthquake',
+  // Rogue skills
+  'pickPocket',
+  'backStab',
+  'toolsOfTrade',
+  // Healer skills
+  'heal',
+  'protectiveAura',
+  'brightness',
+]);
+
+export type SpellId = z.infer<typeof SpellIdSchema>;
 export const EquipTypeSchema = z.enum(['mount', 'pet', 'costume', 'equipped']);
 export const ShopTypeSchema = z.enum(['market', 'questShop', 'timeTravelersShop', 'seasonalShop']);
 
@@ -52,11 +72,12 @@ export const ToolArgsSchemas = {
   delete_task: z.object({
     taskId: z.string(),
   }),
-  buy_reward: z.object({
-    key: z.string(),
+  buy_gems: z.object({
+    quantity: z.number().min(1).max(24).optional(),
   }),
+  get_available_spells: z.object({}),
   cast_spell: z.object({
-    spellId: z.string(),
+    spellId: SpellIdSchema,
     targetId: z.string().optional(),
   }),
   create_tag: z.object({
