@@ -1,5 +1,8 @@
 # Habitica MCP Server
 
+![CI](https://github.com/mikedfunk/habitica-mcp-server/actions/workflows/ci.yml/badge.svg)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=mikedfunk_habitica-mcp-server&metric=coverage)](https://sonarcloud.io/dashboard?id=mikedfunk_habitica-mcp-server)
+
 *英文版本请阅读 **[README.md](README.md)**。*
 
 这是一个 Model Context Protocol (MCP) 服务器，让 AI 助手能够与 Habitica API 交互——创建任务、追踪习惯、养成宠物，享受游戏化的生产力提升。
