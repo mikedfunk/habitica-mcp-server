@@ -1,6 +1,6 @@
 import { ValidationError } from '../errors.js';
 import { logger } from '../logger.js';
-import { ToolArgsSchemas } from '../schemas.js';
+import { type SpellId, ToolArgsSchemas } from '../schemas.js';
 import {
   addChecklistItem,
   deleteChecklistItem,
@@ -31,7 +31,9 @@ import {
 } from './handlers/tasks.js';
 import {
   allocateStat,
+  buyGems,
   castSpell,
+  getAvailableSpells,
   getInventory,
   getStats,
   getUserProfile,
@@ -117,8 +119,15 @@ export const toolRegistry: Record<string, ToolHandler> = {
   get_inventory: async () => getInventory(),
 
   cast_spell: async (args) => {
-    const validated = validateArgs<{ spellId: string; targetId?: string }>('cast_spell', args);
+    const validated = validateArgs<{ spellId: SpellId; targetId?: string }>('cast_spell', args);
     return castSpell(validated.spellId, validated.targetId);
+  },
+
+  get_available_spells: async () => getAvailableSpells(),
+
+  buy_gems: async (args) => {
+    const validated = validateArgs<{ quantity?: number }>('buy_gems', args);
+    return buyGems(validated.quantity);
   },
 
   get_tags: async () => getTags(),

@@ -175,20 +175,56 @@ export const tools = [
   },
   {
     name: 'cast_spell',
-    description: t('Cast spell', '施放技能'),
+    description: t(
+      'Cast a class spell. Valid spells: defensiveStance, valorousPresence, intimidate (Warrior); fireball, etherealSurge, earthquake (Mage); pickPocket, backStab, toolsOfTrade (Rogue); heal, protectiveAura, brightness (Healer)',
+      '施放职业技能。有效技能：defensiveStance, valorousPresence, intimidate (战士); fireball, etherealSurge, earthquake (法师); pickPocket, backStab, toolsOfTrade (盗贼); heal, protectiveAura, brightness (治疗师)',
+    ),
     inputSchema: {
       type: 'object',
       properties: {
         spellId: {
           type: 'string',
-          description: t('Spell ID', '技能ID'),
+          description: t(
+            'Spell ID. Warrior: defensiveStance (buff CON), valorousPresence (buff party STR), intimidate (buff party CON). Mage: fireball (damage + XP), etherealSurge (restore party MP), earthquake (damage + buff INT). Rogue: pickPocket (gold from task), backStab (high damage), toolsOfTrade (buff party PER). Healer: heal (restore HP), protectiveAura (buff party CON), brightness (damage + reduce redness)',
+            '技能ID。战士: defensiveStance (增加体质), valorousPresence (增加队伍力量), intimidate (增加队伍体质). 法师: fireball (伤害+经验), etherealSurge (恢复队伍魔法), earthquake (伤害+增加智力). 盗贼: pickPocket (任务金币), backStab (高伤害), toolsOfTrade (增加队伍感知). 治疗师: heal (恢复生命), protectiveAura (增加队伍体质), brightness (伤害+减少任务红度)',
+          ),
         },
         targetId: {
           type: 'string',
-          description: t('Target ID (optional)', '目标ID (可选)'),
+          description: t(
+            'Target ID for spells that need a target (task for fireball/pickPocket/backStab, user for heal)',
+            '需要目标的技能的目标ID (fireball/pickPocket/backStab用任务ID, heal用用户ID)',
+          ),
         },
       },
       required: ['spellId'],
+    },
+  },
+  {
+    name: 'get_available_spells',
+    description: t(
+      'Get list of spells available to the current user based on their class and level. Shows spell names, IDs, mana costs, and descriptions.',
+      '根据当前用户的职业和等级获取可用技能列表。显示技能名称、ID、魔法值消耗和描述。',
+    ),
+    inputSchema: {
+      type: 'object',
+      properties: {},
+    },
+  },
+  {
+    name: 'buy_gems',
+    description: t(
+      'Buy gems with gold. Each gem costs 20 gold. Maximum 24 gems per purchase.',
+      '用金币购买宝石。每颗宝石20金币。每次最多购买24颗。',
+    ),
+    inputSchema: {
+      type: 'object',
+      properties: {
+        quantity: {
+          type: 'number',
+          description: t('Number of gems to buy (1-24, default 1)', '购买宝石数量 (1-24, 默认1)'),
+        },
+      },
     },
   },
   {
