@@ -15,21 +15,12 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install
       - name: Run tests with coverage
-        run: |
-          bunx c8 --reporter=lcov --reporter=text --all --src=src bun test
-          echo "Coverage files generated:"
-          ls -la coverage/ 2>/dev/null || echo "No coverage directory in root"
-          echo "Checking for lcov.info..."
-          find . -name "lcov.info" -type f 2>/dev/null | head -5
-          echo "Current directory:"
-          pwd
-          ls -la
-        continue-on-error: true
+        run: bunx c8 --reporter=lcov --reporter=text --all --src=src bun test
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: coverage/
+          path: lcov.info
           retention-days: 1
       - name: Check coverage file
         run: |
@@ -37,9 +28,6 @@ jobs:
           cat coverage/lcov.info | head -20 || echo "No lcov.info file"
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v7.0.0
-        with:
-          args: >
-            -Dsonar.verbose=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
