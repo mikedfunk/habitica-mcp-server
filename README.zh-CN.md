@@ -24,7 +24,7 @@
   "mcpServers": {
     "habitica": {
       "command": "bunx",
-      "args": ["github:mikedfunk/habitica-mcp-server"],
+      "args": ["github:mikedfunk/habitica-mcp-server#v0.2.4"],
       "env": {
         "HABITICA_USER_ID": "your-user-id",
         "HABITICA_API_TOKEN": "your-api-token"
@@ -40,7 +40,7 @@
   "mcpServers": {
     "habitica": {
       "command": "bunx",
-      "args": ["github:mikedfunk/habitica-mcp-server"],
+      "args": ["github:mikedfunk/habitica-mcp-server#v0.2.4"],
       "env": {
         "HABITICA_USER_ID": "your-user-id",
         "HABITICA_API_TOKEN": "your-api-token"
