@@ -2,331 +2,186 @@
 
 _中文文档请阅读 **[README.zh-CN.md](README.zh-CN.md)**_
 
-A Model Context Protocol (MCP) server that lets AI assistants seamlessly interact with the Habitica API – create tasks, track habits, raise pets and enjoy gamified productivity.
+A Model Context Protocol (MCP) server that lets AI assistants interact with the Habitica API — create tasks, track habits, raise pets, and enjoy gamified productivity.
 
-## ✨ Features
-
-### 🎮 Core Gameplay Features
-- 📋 **Smart task management** – create / view / update / delete all task types
-- ✅ **Checklist management** – add, update, delete and score checklist items within tasks
-- 🎯 **Habit tracking** – record habit completions and build healthy routines
-- 🐾 **Pet raising** – hatch and feed pets, watch them grow
-- 🏇 **Mount collection** – manage and equip all kinds of mounts
-- 🛍️ **Shop & rewards** – browse and buy in-game items
-- ⚡ **Skill system** – cast class skills to enhance gameplay
-
-### 📊 Data-oriented Features
-- 👤 **User profile** – fetch detailed user information and stats
-- 🏷️ **Tag management** – create and manage tags for better organisation
-- 📬 **Notification centre** – read and manage system notifications
-- 📦 **Inventory** – list every item and piece of equipment you own
-
-### 🤖 AI Integration Highlights
-- 🧠 **Natural-language control** – operate Habitica via conversation
-- 📝 **Task suggestions** – AI can create tasks on demand
-- 📈 **Progress reporting** – automatically track and summarise progress
-- 🎨 **Personalised experience** – tailored recommendations based on your habits
-
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
-- Node.js 18+
-- npm or yarn
+
+- [Bun](https://bun.sh) 1.0+
 - A valid Habitica account
 
-### Installation
+### MCP client configuration
 
-1. **Clone the repo**
-```bash
-git clone https://github.com/ibreaker/habitica-mcp-server.git
-cd habitica-mcp-server
-```
+The easiest way to use this server is via `bunx` — no install required.
 
-2. **Install dependencies**
-```bash
-npm install
-```
-
-3. **Set API credentials** (see next section)
-
-4. **Start the server**
-```bash
-npm start
-```
-
-## ⚙️ Configuration
-
-### Get Habitica API credentials
-1. Log into [Habitica](https://habitica.com)
-2. Click your avatar → **Settings**
-3. Open the **API** tab
-4. Copy **User ID** and **API Token**
-
-### Environment variables
-
-**Method A: export variables**
-```bash
-export HABITICA_USER_ID="your-user-id"
-export HABITICA_API_TOKEN="your-api-token"
-```
-
-**Method B: .env file**
-```bash
-HABITICA_USER_ID=your-user-id
-HABITICA_API_TOKEN=your-api-token
-```
-
-> ⚠️ **Security tip:** never commit your API keys to version control.
-
-## 🎯 Usage
-
-### Start the server
-```bash
-# Production
-npm start
-
-# Development (with reload)
-npm run dev
-```
-
-### MCP client integration
-
-The server follows the MCP spec and works with any AI client that supports MCP. Example Claude Desktop config:
+**Claude Desktop** (`~/Library/Application Support/Claude/claude_desktop_config.json`):
 ```json
 {
   "mcpServers": {
-    "habitica-mcp-server": {
-      "command": "npx",
-      "args": ["-y", "habitica-mcp-server"],
+    "habitica": {
+      "command": "bunx",
+      "args": ["github:mikedfunk/habitica-mcp-server"],
       "env": {
-        "HABITICA_USER_ID": "your-id",
-        "HABITICA_API_TOKEN": "your-token",
-        "MCP_LANG": "en"  // or zh-CN
+        "HABITICA_USER_ID": "your-user-id",
+        "HABITICA_API_TOKEN": "your-api-token"
       }
     }
   }
 }
 ```
 
-### Example dialogue
-```
-User: "Create a habit for learning Python"
-AI:   "Sure, the habit has been created!"
-
-User: "Show me today's tasks"
-AI:   "Here is your task list for today…"
-
-User: "Add a checklist item to my project task: 'Review code'"
-AI:   "Added checklist item 'Review code' to your project task!"
-
-User: "I finished my workout, please record it"
-AI:   "Great job! The workout is logged."
-```
-
-## 🛠️ Available Tools
-
-### User Related
-- `get_user_profile`: Get user profile information
-- `get_stats`: Get user statistics
-- `get_inventory`: Get inventory list
-
-### Task Management
-- `get_tasks`: Get task list (can specify type: habits, dailys, todos, rewards)
-- `create_task`: Create new task
-- `update_task`: Update task
-- `delete_task`: Delete task
-- `score_task`: Complete task or record habit
-
-### Checklist Management
-- `get_task_checklist`: Get checklist items for a task
-- `add_checklist_item`: Add checklist item to task
-- `update_checklist_item`: Update checklist item
-- `delete_checklist_item`: Delete checklist item
-- `score_checklist_item`: Score checklist item (mark complete/incomplete)
-
-### Tag Management
-- `get_tags`: Get tag list
-- `create_tag`: Create new tag
-
-### Pets and Mounts
-- `get_pets`: Get pet list
-- `feed_pet`: Feed pet
-- `hatch_pet`: Hatch pet
-- `get_mounts`: Get mount list
-- `equip_item`: Equip pet, mount or equipment
-
-### Shop and Purchases
-- `get_shop`: Get shop item list
-- `buy_item`: Buy shop item
-- `buy_reward`: Buy reward
-
-### Notification Management
-- `get_notifications`: Get notification list
-- `read_notification`: Mark notification as read
-
-### Skill System
-- `cast_spell`: Cast spell
-
-## 📖 API Usage Examples
-
-### Create Task
+**Claude Code** (`.claude/settings.json` or global `~/.claude/settings.json`):
 ```json
 {
-  "type": "todo",
-  "text": "Complete project documentation",
-  "notes": "Including API docs and user guide",
-  "difficulty": 1.5,
-  "priority": 2,
-  "checklist": [
-    {"text": "Write API documentation", "completed": false},
-    {"text": "Create user guide", "completed": false},
-    {"text": "Review and proofread", "completed": false}
-  ]
+  "mcpServers": {
+    "habitica": {
+      "command": "bunx",
+      "args": ["github:mikedfunk/habitica-mcp-server"],
+      "env": {
+        "HABITICA_USER_ID": "your-user-id",
+        "HABITICA_API_TOKEN": "your-api-token"
+      }
+    }
+  }
 }
 ```
 
-### Complete Task
-```json
-{
-  "taskId": "task-id-here",
-  "direction": "up"
-}
-```
+Set `MCP_LANG=zh-CN` if you prefer Chinese responses.
 
-### Get Specific Task Type
-```json
-{
-  "type": "todos"
-}
-```
+### Get Habitica API credentials
 
-### Pet Management
-```json
-{
-  "pet": "Wolf-Base",
-  "food": "Meat"
-}
-```
+1. Log into [Habitica](https://habitica.com)
+2. Click your avatar → **Settings** → **API**
+3. Copy your **User ID** and **API Token**
 
-### Buy Item
-```json
-{
-  "itemKey": "armor_warrior_1",
-  "quantity": 1
-}
-```
+## Available Tools
 
-### Checklist Management
-```json
-// Add checklist item
-{
-  "taskId": "task-id-here",
-  "text": "Research requirements"
-}
+### User
+| Tool | Description |
+|------|-------------|
+| `get_user_profile` | Get full user profile |
+| `get_stats` | Get user stats (HP, MP, XP, gold, level) |
+| `get_inventory` | Get all owned items |
+| `toggle_sleep` | Rest in the inn (pause dailies) |
+| `revive` | Revive after death |
+| `allocate_stat` | Spend a stat point (str/int/con/per) |
 
-// Update checklist item
-{
-  "taskId": "task-id-here",
-  "itemId": "checklist-item-id",
-  "text": "Updated item text",
-  "completed": true
-}
+### Tasks
+| Tool | Description |
+|------|-------------|
+| `get_tasks` | List tasks (optionally filter by type) |
+| `create_task` | Create a habit, daily, todo, or reward |
+| `update_task` | Update task text, notes, or completion |
+| `delete_task` | Delete a task |
+| `score_task` | Complete a task or record a habit |
+| `reorder_task` | Move a task to a specific position |
+| `clear_completed_todos` | Remove all completed todos |
 
-// Score checklist item (toggle completion)
-{
-  "taskId": "task-id-here",
-  "itemId": "checklist-item-id"
-}
-```
+### Checklists
+| Tool | Description |
+|------|-------------|
+| `get_task_checklist` | List checklist items for a task |
+| `add_checklist_item` | Add an item to a task's checklist |
+| `update_checklist_item` | Update checklist item text or completion |
+| `delete_checklist_item` | Delete a checklist item |
+| `score_checklist_item` | Toggle a checklist item complete/incomplete |
+
+### Tags
+| Tool | Description |
+|------|-------------|
+| `get_tags` | List all tags |
+| `create_tag` | Create a new tag |
+| `update_tag` | Rename a tag |
+| `delete_tag` | Delete a tag |
+
+### Pets & Mounts
+| Tool | Description |
+|------|-------------|
+| `get_pets` | List owned pets |
+| `feed_pet` | Feed a pet |
+| `hatch_pet` | Hatch an egg with a hatching potion |
+| `get_mounts` | List owned mounts |
+| `equip_item` | Equip a pet, mount, or gear item |
+
+### Shop & Rewards
+| Tool | Description |
+|------|-------------|
+| `get_shop` | Browse a shop (market, questShop, etc.) |
+| `buy_item` | Buy an item from the shop |
+| `buy_reward` | Buy a custom reward |
+
+### Skills
+| Tool | Description |
+|------|-------------|
+| `cast_spell` | Cast a class skill |
+
+### Notifications
+| Tool | Description |
+|------|-------------|
+| `get_notifications` | List notifications |
+| `read_notification` | Mark a notification as read |
+
+### Social
+| Tool | Description |
+|------|-------------|
+| `get_groups` | List groups (party, guilds) |
+| `get_party` | Get current party info |
+| `send_private_message` | Send a private message to a member |
+| `get_inbox` | Get inbox messages |
 
 ## Task Types
 
-- `habit`: Habit (can be recorded positively or negatively)
-- `daily`: Daily task (resets every day)
-- `todo`: To-do item (one-time task)
-- `reward`: Reward (can be purchased with gold)
+| Value | Description |
+|-------|-------------|
+| `habit` | Repeatable habit (positive or negative direction) |
+| `daily` | Resets each day |
+| `todo` | One-time to-do item |
+| `reward` | Purchasable with gold |
 
-## Difficulty Levels
+## Difficulty / Priority
 
-- `0.1`: Easy
-- `1`: Medium
-- `1.5`: Hard
-- `2`: Extreme
+| Value | Label |
+|-------|-------|
+| `0.1` | Easy / Low |
+| `1` | Medium |
+| `1.5` | Hard / High |
+| `2` | Very hard / Urgent |
 
-## Priority Levels
+## Development
 
-- `0.1`: Low
-- `1`: Medium
-- `1.5`: High
-- `2`: Extreme
-
-## 🔧 Troubleshooting
-
-### Common Issues
-
-**Issue**: Server startup failed
-```
-Solution: 
-1. Check Node.js version is 18+
-2. Confirm environment variables are set correctly
-3. Verify API credentials are valid
-```
-
-**Issue**: API call failed
-```
-Solution:
-1. Check network connection
-2. Verify Habitica API credentials
-3. Confirm API rate limits haven't been exceeded
-```
-
-**Issue**: Task or pet not found
-```
-Solution:
-1. Confirm task ID is correct
-2. Check if task exists in Habitica
-3. Verify user permissions
-```
-
-### Debug Mode
 ```bash
-# Enable verbose logging
-DEBUG=* npm start
+git clone https://github.com/mikedfunk/habitica-mcp-server.git
+cd habitica-mcp-server
+bun install
+
+# Run
+bun src/index.ts
+
+# Type check
+bun run typecheck
+
+# Tests
+bun test
+
+# Build
+bun run build
 ```
 
-### Get Help
-- 📚 Check [Habitica API Documentation](https://habitica.com/apidoc/)
-- 🐛 Submit [Issues](https://github.com/ibreaker/habitica-mcp-server/issues)
+## Troubleshooting
 
-## 🤝 Contributing
+**Server won't start** — Check that `HABITICA_USER_ID` and `HABITICA_API_TOKEN` are set correctly.
 
-We welcome all forms of contributions!
+**API errors** — Verify your credentials at Habitica → Settings → API. Check you haven't hit rate limits.
 
-### How to Contribute
-1. Fork this project
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Create Pull Request
+**Task/pet not found** — Confirm the ID is correct. IDs are UUIDs visible in `get_tasks` / `get_pets` output.
 
-### Development Guidelines
-- Follow existing code style
-- Add appropriate tests
-- Update relevant documentation
-- Ensure all tests pass
+## License
 
-## 📄 License
-
-This project is open source under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🌟 Acknowledgments
-
-- Thanks to [Habitica](https://habitica.com) for providing an excellent API
-- Thanks to [Anthropic](https://anthropic.com) for the MCP protocol
-- Thanks to all contributors and users for their support
+MIT — see [LICENSE](LICENSE).
 
 ---
 
 <div align="center">
-  <b>Let AI become your Habitica task management assistant!</b>
+  <b>Let AI become your Habitica assistant.</b>
 </div>
