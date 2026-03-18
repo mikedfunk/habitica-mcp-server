@@ -8,9 +8,8 @@ import {
   ListToolsRequestSchema,
   McpError,
 } from '@modelcontextprotocol/sdk/types.js';
-import axios, { AxiosInstance } from 'axios';
-import { z } from 'zod';
 import { setLanguage, t } from './i18n.js';
+import { fetchHabiticaApiResponse } from './client.js';
 import type {
   HabiticaTask,
   HabiticaUser,
@@ -27,8 +26,6 @@ import type {
   HabiticaApiResponse,
 } from './types.js';
 
-const HABITICA_API_BASE = 'https://habitica.com/api/v3';
-
 const HABITICA_USER_ID = process.env['HABITICA_USER_ID'];
 const HABITICA_API_TOKEN = process.env['HABITICA_API_TOKEN'];
 
@@ -44,20 +41,10 @@ if (!HABITICA_USER_ID || !HABITICA_API_TOKEN) {
   process.exit(1);
 }
 
-const habiticaClient: AxiosInstance = axios.create({
-  baseURL: HABITICA_API_BASE,
-  headers: {
-    'x-api-user': HABITICA_USER_ID,
-    'x-api-key': HABITICA_API_TOKEN,
-    'x-client': `${HABITICA_USER_ID}-habitica-mcp-server`,
-    'Content-Type': 'application/json',
-  },
-});
-
 const server = new Server(
   {
     name: 'habitica-mcp-server',
-    version: '0.0.5',
+    version: '0.0.6',
   },
   {
     capabilities: {
@@ -661,8 +648,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 });
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const { name, arguments: args } = request.params;
-  const toolArgs = (args ?? {}) as Record<string, unknown>;
+  const { name, arguments: toolArguments } = request.params;
+  const toolArgs = (toolArguments ?? {}) as Record<string, unknown>;
 
   try {
     switch (name) {
@@ -804,9 +791,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       throw error;
     }
 
-    const axiosError = error as { response?: { data?: { message?: string } }; message?: string };
-    const errorMessage =
-      axiosError.response?.data?.message ?? axiosError.message ?? t('Unknown error', '未知错误');
+    const apiError = error as { message?: string };
+    const errorMessage = apiError.message ?? t('Unknown error', '未知错误');
     throw new McpError(
       ErrorCode.InternalError,
       t(`Habitica API error: ${errorMessage}`, `Habitica API 错误: ${errorMessage}`)
@@ -815,14 +801,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 });
 
 async function getUserProfile(): Promise<ToolResult> {
-  const response = await habiticaClient.get<HabiticaApiResponse<HabiticaUser>>('/user');
-  const user = response.data.data;
+  const apiResponse = await fetchHabiticaApiResponse<HabiticaUser>('GET', '/user');
 
   return {
     content: [
       {
         type: 'text',
-        text: JSON.stringify(user, null, 2),
+        text: JSON.stringify(apiResponse.data, null, 2),
       },
     ],
   };
@@ -830,24 +815,21 @@ async function getUserProfile(): Promise<ToolResult> {
 
 async function getTasks(type?: TaskListType): Promise<ToolResult> {
   const endpoint = type ? `/tasks/user?type=${type}` : '/tasks/user';
-  const response = await habiticaClient.get<HabiticaApiResponse<HabiticaTask[]>>(endpoint);
+  const apiResponse = await fetchHabiticaApiResponse<HabiticaTask[]>('GET', endpoint);
 
   return {
     content: [
       {
         type: 'text',
-        text: JSON.stringify(response.data, null, 2),
+        text: JSON.stringify(apiResponse, null, 2),
       },
     ],
   };
 }
 
 async function createTask(taskData: CreateTaskInput): Promise<ToolResult> {
-  const response = await habiticaClient.post<HabiticaApiResponse<HabiticaTask>>(
-    '/tasks/user',
-    taskData
-  );
-  const task = response.data.data;
+  const apiResponse = await fetchHabiticaApiResponse<HabiticaTask>('POST', '/tasks/user', taskData);
+  const task = apiResponse.data;
 
   return {
     content: [
@@ -863,10 +845,11 @@ async function createTask(taskData: CreateTaskInput): Promise<ToolResult> {
 }
 
 async function scoreTask(taskId: string, direction: 'up' | 'down' = 'up'): Promise<ToolResult> {
-  const response = await habiticaClient.post<HabiticaApiResponse<ScoreTaskResult>>(
+  const apiResponse = await fetchHabiticaApiResponse<ScoreTaskResult>(
+    'POST',
     `/tasks/${taskId}/score/${direction}`
   );
-  const result = response.data.data;
+  const result = apiResponse.data;
 
   let message = t('Task scored! ', '任务完成! ');
   if (result.exp) message += t(`Gained ${result.exp} XP `, `获得 ${result.exp} 经验值 `);
@@ -884,11 +867,12 @@ async function scoreTask(taskId: string, direction: 'up' | 'down' = 'up'): Promi
 }
 
 async function updateTask(taskId: string, updates: UpdateTaskInput): Promise<ToolResult> {
-  const response = await habiticaClient.put<HabiticaApiResponse<HabiticaTask>>(
+  const apiResponse = await fetchHabiticaApiResponse<HabiticaTask>(
+    'PUT',
     `/tasks/${taskId}`,
     updates
   );
-  const task = response.data.data;
+  const task = apiResponse.data;
 
   return {
     content: [
@@ -901,7 +885,7 @@ async function updateTask(taskId: string, updates: UpdateTaskInput): Promise<Too
 }
 
 async function deleteTask(taskId: string): Promise<ToolResult> {
-  await habiticaClient.delete(`/tasks/${taskId}`);
+  await fetchHabiticaApiResponse<Record<string, never>>('DELETE', `/tasks/${taskId}`);
 
   return {
     content: [
@@ -917,23 +901,21 @@ async function deleteTask(taskId: string): Promise<ToolResult> {
 }
 
 async function getStats(): Promise<ToolResult> {
-  const response = await habiticaClient.get<HabiticaApiResponse<HabiticaUser>>('/user');
+  const apiResponse = await fetchHabiticaApiResponse<HabiticaUser>('GET', '/user');
 
   return {
     content: [
       {
         type: 'text',
-        text: JSON.stringify(response.data.data.stats, null, 2),
+        text: JSON.stringify(apiResponse.data.stats, null, 2),
       },
     ],
   };
 }
 
 async function buyReward(key: string): Promise<ToolResult> {
-  const response = await habiticaClient.post<HabiticaApiResponse<{ gp: number }>>(
-    `/user/buy/${key}`
-  );
-  const result = response.data.data;
+  const apiResponse = await fetchHabiticaApiResponse<{ gp: number }>('POST', `/user/buy/${key}`);
+  const result = apiResponse.data;
 
   return {
     content: [
@@ -949,13 +931,13 @@ async function buyReward(key: string): Promise<ToolResult> {
 }
 
 async function getInventory(): Promise<ToolResult> {
-  const response = await habiticaClient.get<HabiticaApiResponse<HabiticaUser>>('/user');
+  const apiResponse = await fetchHabiticaApiResponse<HabiticaUser>('GET', '/user');
 
   return {
     content: [
       {
         type: 'text',
-        text: JSON.stringify(response.data.data.items, null, 2),
+        text: JSON.stringify(apiResponse.data.items, null, 2),
       },
     ],
   };
@@ -965,7 +947,7 @@ async function castSpell(spellId: string, targetId?: string): Promise<ToolResult
   const endpoint = targetId
     ? `/user/class/cast/${spellId}?targetId=${targetId}`
     : `/user/class/cast/${spellId}`;
-  await habiticaClient.post(endpoint);
+  await fetchHabiticaApiResponse<unknown>('POST', endpoint);
 
   return {
     content: [
@@ -978,21 +960,21 @@ async function castSpell(spellId: string, targetId?: string): Promise<ToolResult
 }
 
 async function getTags(): Promise<ToolResult> {
-  const response = await habiticaClient.get<HabiticaApiResponse<Tag[]>>('/tags');
+  const apiResponse = await fetchHabiticaApiResponse<Tag[]>('GET', '/tags');
 
   return {
     content: [
       {
         type: 'text',
-        text: JSON.stringify(response.data, null, 2),
+        text: JSON.stringify(apiResponse, null, 2),
       },
     ],
   };
 }
 
 async function createTag(name: string): Promise<ToolResult> {
-  const response = await habiticaClient.post<HabiticaApiResponse<Tag>>('/tags', { name });
-  const tag = response.data.data;
+  const apiResponse = await fetchHabiticaApiResponse<Tag>('POST', '/tags', { name });
+  const tag = apiResponse.data;
 
   return {
     content: [
@@ -1008,8 +990,8 @@ async function createTag(name: string): Promise<ToolResult> {
 }
 
 async function updateTag(tagId: string, name: string): Promise<ToolResult> {
-  const response = await habiticaClient.put<HabiticaApiResponse<Tag>>(`/tags/${tagId}`, { name });
-  const tag = response.data.data;
+  const apiResponse = await fetchHabiticaApiResponse<Tag>('PUT', `/tags/${tagId}`, { name });
+  const tag = apiResponse.data;
 
   return {
     content: [
@@ -1025,7 +1007,7 @@ async function updateTag(tagId: string, name: string): Promise<ToolResult> {
 }
 
 async function deleteTag(tagId: string): Promise<ToolResult> {
-  await habiticaClient.delete(`/tags/${tagId}`);
+  await fetchHabiticaApiResponse<Record<string, never>>('DELETE', `/tags/${tagId}`);
 
   return {
     content: [
@@ -1041,23 +1023,24 @@ async function deleteTag(tagId: string): Promise<ToolResult> {
 }
 
 async function getPets(): Promise<ToolResult> {
-  const response = await habiticaClient.get<HabiticaApiResponse<HabiticaUser>>('/user');
+  const apiResponse = await fetchHabiticaApiResponse<HabiticaUser>('GET', '/user');
 
   return {
     content: [
       {
         type: 'text',
-        text: JSON.stringify(response.data.data.items.pets, null, 2),
+        text: JSON.stringify(apiResponse.data.items.pets, null, 2),
       },
     ],
   };
 }
 
 async function feedPet(pet: string, food: string): Promise<ToolResult> {
-  const response = await habiticaClient.post<HabiticaApiResponse<{ message?: string }>>(
+  const apiResponse = await fetchHabiticaApiResponse<{ message?: string }>(
+    'POST',
     `/user/feed/${pet}/${food}`
   );
-  const result = response.data.data;
+  const result = apiResponse.data;
 
   let message = t(`Successfully fed pet ${pet}! `, `成功喂养宠物 ${pet}! `);
   if (result.message) {
@@ -1075,7 +1058,7 @@ async function feedPet(pet: string, food: string): Promise<ToolResult> {
 }
 
 async function hatchPet(egg: string, hatchingPotion: string): Promise<ToolResult> {
-  await habiticaClient.post(`/user/hatch/${egg}/${hatchingPotion}`);
+  await fetchHabiticaApiResponse<unknown>('POST', `/user/hatch/${egg}/${hatchingPotion}`);
 
   return {
     content: [
@@ -1091,20 +1074,20 @@ async function hatchPet(egg: string, hatchingPotion: string): Promise<ToolResult
 }
 
 async function getMounts(): Promise<ToolResult> {
-  const response = await habiticaClient.get<HabiticaApiResponse<HabiticaUser>>('/user');
+  const apiResponse = await fetchHabiticaApiResponse<HabiticaUser>('GET', '/user');
 
   return {
     content: [
       {
         type: 'text',
-        text: JSON.stringify(response.data.data.items.mounts, null, 2),
+        text: JSON.stringify(apiResponse.data.items.mounts, null, 2),
       },
     ],
   };
 }
 
 async function equipItem(type: EquipType, key: string): Promise<ToolResult> {
-  await habiticaClient.post(`/user/equip/${type}/${key}`);
+  await fetchHabiticaApiResponse<unknown>('POST', `/user/equip/${type}/${key}`);
 
   return {
     content: [
@@ -1117,20 +1100,20 @@ async function equipItem(type: EquipType, key: string): Promise<ToolResult> {
 }
 
 async function getNotifications(): Promise<ToolResult> {
-  const response = await habiticaClient.get('/notifications');
+  const apiResponse = await fetchHabiticaApiResponse<unknown>('GET', '/notifications');
 
   return {
     content: [
       {
         type: 'text',
-        text: JSON.stringify(response.data, null, 2),
+        text: JSON.stringify(apiResponse, null, 2),
       },
     ],
   };
 }
 
 async function readNotification(notificationId: string): Promise<ToolResult> {
-  await habiticaClient.post(`/notifications/${notificationId}/read`);
+  await fetchHabiticaApiResponse<unknown>('POST', `/notifications/${notificationId}/read`);
 
   return {
     content: [
@@ -1146,24 +1129,25 @@ async function readNotification(notificationId: string): Promise<ToolResult> {
 }
 
 async function getShop(shopType: ShopType = 'market'): Promise<ToolResult> {
-  const response = await habiticaClient.get(`/shops/${shopType}`);
+  const apiResponse = await fetchHabiticaApiResponse<unknown>('GET', `/shops/${shopType}`);
 
   return {
     content: [
       {
         type: 'text',
-        text: JSON.stringify(response.data, null, 2),
+        text: JSON.stringify(apiResponse, null, 2),
       },
     ],
   };
 }
 
 async function buyItem(itemKey: string, quantity = 1): Promise<ToolResult> {
-  const response = await habiticaClient.post<HabiticaApiResponse<{ gp: number }>>(
+  const apiResponse = await fetchHabiticaApiResponse<{ gp: number }>(
+    'POST',
     `/user/buy/${itemKey}`,
     { quantity }
   );
-  const result = response.data.data;
+  const result = apiResponse.data;
 
   return {
     content: [
@@ -1179,10 +1163,8 @@ async function buyItem(itemKey: string, quantity = 1): Promise<ToolResult> {
 }
 
 async function getTaskChecklist(taskId: string): Promise<ToolResult> {
-  const response = await habiticaClient.get<HabiticaApiResponse<HabiticaTask>>(
-    `/tasks/${taskId}`
-  );
-  const task = response.data.data;
+  const apiResponse = await fetchHabiticaApiResponse<HabiticaTask>('GET', `/tasks/${taskId}`);
+  const task = apiResponse.data;
   const checklist: ChecklistItem[] = task.checklist ?? [];
 
   return {
@@ -1208,11 +1190,12 @@ async function getTaskChecklist(taskId: string): Promise<ToolResult> {
 }
 
 async function addChecklistItem(taskId: string, text: string): Promise<ToolResult> {
-  const response = await habiticaClient.post<HabiticaApiResponse<HabiticaTask>>(
+  const apiResponse = await fetchHabiticaApiResponse<HabiticaTask>(
+    'POST',
     `/tasks/${taskId}/checklist`,
     { text }
   );
-  const task = response.data.data;
+  const task = apiResponse.data;
 
   return {
     content: [
@@ -1232,11 +1215,12 @@ async function updateChecklistItem(
   itemId: string,
   updates: UpdateChecklistItemInput
 ): Promise<ToolResult> {
-  const response = await habiticaClient.put<HabiticaApiResponse<HabiticaTask>>(
+  const apiResponse = await fetchHabiticaApiResponse<HabiticaTask>(
+    'PUT',
     `/tasks/${taskId}/checklist/${itemId}`,
     updates
   );
-  const task = response.data.data;
+  const task = apiResponse.data;
 
   return {
     content: [
@@ -1252,7 +1236,10 @@ async function updateChecklistItem(
 }
 
 async function deleteChecklistItem(taskId: string, itemId: string): Promise<ToolResult> {
-  await habiticaClient.delete(`/tasks/${taskId}/checklist/${itemId}`);
+  await fetchHabiticaApiResponse<Record<string, never>>(
+    'DELETE',
+    `/tasks/${taskId}/checklist/${itemId}`
+  );
 
   return {
     content: [
@@ -1268,10 +1255,11 @@ async function deleteChecklistItem(taskId: string, itemId: string): Promise<Tool
 }
 
 async function scoreChecklistItem(taskId: string, itemId: string): Promise<ToolResult> {
-  const response = await habiticaClient.post<HabiticaApiResponse<HabiticaTask>>(
+  const apiResponse = await fetchHabiticaApiResponse<HabiticaTask>(
+    'POST',
     `/tasks/${taskId}/checklist/${itemId}/score`
   );
-  const task = response.data.data;
+  const task = apiResponse.data;
   const item = task.checklist?.find((checklistItem) => checklistItem.id === itemId);
 
   return {
@@ -1290,7 +1278,7 @@ async function scoreChecklistItem(taskId: string, itemId: string): Promise<ToolR
 }
 
 async function reorderTask(taskId: string, position: number): Promise<ToolResult> {
-  await habiticaClient.post(`/tasks/${taskId}/move/to/${position}`);
+  await fetchHabiticaApiResponse<unknown>('POST', `/tasks/${taskId}/move/to/${position}`);
 
   return {
     content: [
@@ -1306,7 +1294,7 @@ async function reorderTask(taskId: string, position: number): Promise<ToolResult
 }
 
 async function clearCompletedTodos(): Promise<ToolResult> {
-  await habiticaClient.post('/tasks/clearCompletedTodos');
+  await fetchHabiticaApiResponse<unknown>('POST', '/tasks/clearCompletedTodos');
 
   return {
     content: [
@@ -1319,8 +1307,8 @@ async function clearCompletedTodos(): Promise<ToolResult> {
 }
 
 async function toggleSleep(): Promise<ToolResult> {
-  const response = await habiticaClient.post<HabiticaApiResponse<boolean>>('/user/sleep');
-  const isSleeping = response.data.data;
+  const apiResponse = await fetchHabiticaApiResponse<boolean>('POST', '/user/sleep');
+  const isSleeping = apiResponse.data;
 
   return {
     content: [
@@ -1335,7 +1323,7 @@ async function toggleSleep(): Promise<ToolResult> {
 }
 
 async function revive(): Promise<ToolResult> {
-  await habiticaClient.post('/user/revive');
+  await fetchHabiticaApiResponse<unknown>('POST', '/user/revive');
 
   return {
     content: [
@@ -1348,10 +1336,11 @@ async function revive(): Promise<ToolResult> {
 }
 
 async function allocateStat(stat: string): Promise<ToolResult> {
-  const response = await habiticaClient.post<HabiticaApiResponse<UserStats>>(
+  const apiResponse = await fetchHabiticaApiResponse<UserStats>(
+    'POST',
     `/user/allocate?stat=${stat}`
   );
-  const stats = response.data.data;
+  const stats = apiResponse.data;
 
   return {
     content: [
@@ -1368,33 +1357,33 @@ async function allocateStat(stat: string): Promise<ToolResult> {
 
 async function getGroups(type?: string): Promise<ToolResult> {
   const endpoint = type ? `/groups?type=${type}` : '/groups?type=party,guilds';
-  const response = await habiticaClient.get(endpoint);
+  const apiResponse = await fetchHabiticaApiResponse<unknown>('GET', endpoint);
 
   return {
     content: [
       {
         type: 'text',
-        text: JSON.stringify(response.data, null, 2),
+        text: JSON.stringify(apiResponse, null, 2),
       },
     ],
   };
 }
 
 async function getParty(): Promise<ToolResult> {
-  const response = await habiticaClient.get('/groups/party');
+  const apiResponse = await fetchHabiticaApiResponse<unknown>('GET', '/groups/party');
 
   return {
     content: [
       {
         type: 'text',
-        text: JSON.stringify(response.data, null, 2),
+        text: JSON.stringify(apiResponse, null, 2),
       },
     ],
   };
 }
 
 async function sendPrivateMessage(toUserId: string, message: string): Promise<ToolResult> {
-  await habiticaClient.post('/members/send-private-message', {
+  await fetchHabiticaApiResponse<unknown>('POST', '/members/send-private-message', {
     message,
     toUserId,
   });
@@ -1413,13 +1402,16 @@ async function sendPrivateMessage(toUserId: string, message: string): Promise<To
 }
 
 async function getInbox(page = 0): Promise<ToolResult> {
-  const response = await habiticaClient.get(`/inbox/messages?page=${page}`);
+  const apiResponse = await fetchHabiticaApiResponse<unknown>(
+    'GET',
+    `/inbox/messages?page=${page}`
+  );
 
   return {
     content: [
       {
         type: 'text',
-        text: JSON.stringify(response.data, null, 2),
+        text: JSON.stringify(apiResponse, null, 2),
       },
     ],
   };
