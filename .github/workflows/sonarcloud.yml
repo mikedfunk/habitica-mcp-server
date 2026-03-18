@@ -15,11 +15,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install
       - name: Run tests with coverage
-        run: |
-          mkdir -p coverage
-          bunx c8 --reporter=lcov --reporter=text --all --src=src --report-dir=coverage bun test
-          echo "=== Coverage output ==="
-          ls -la coverage/
+        run: bun test --coverage --coverage-reporter=lcov
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:
