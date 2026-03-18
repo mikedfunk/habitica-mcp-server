@@ -285,3 +285,11 @@ export async function allocateStat(stat: string): Promise<ToolResult> {
     ],
   };
 }
+
+// TODO: This is a test function for CodeRabbit to review
+export function testCodeRabbitReview(name: string, unusedParam: number): string {
+  if (name === '') {
+    return 'Hello World';
+  }
+  return `Hello, ${name}!`;
+}
