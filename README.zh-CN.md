@@ -1,337 +1,184 @@
 # Habitica MCP Server
 
-*English version available at **[README.md](README.md)**.*
+*英文版本请阅读 **[README.md](README.md)**。*
 
-这是一个 Model Context Protocol (MCP) 服务器，让 AI 助手能够与 Habitica API 无缝交互，帮助您管理任务、追踪习惯、养成宠物，享受游戏化的生产力提升。
+这是一个 Model Context Protocol (MCP) 服务器，让 AI 助手能够与 Habitica API 交互——创建任务、追踪习惯、养成宠物，享受游戏化的生产力提升。
 
-## ✨ 功能特性
-
-### 🎮 核心游戏化功能
-- 📋 **智能任务管理**: 创建、查看、更新和删除各类任务
-- ✅ **清单管理**: 在任务中添加、更新、删除和完成清单项目
-- 🎯 **习惯追踪**: 记录习惯完成情况，培养良好生活方式
-- 🐾 **宠物养成**: 孵化、喂养宠物，享受成长乐趣
-- 🏇 **坐骑收集**: 管理和装备各种坐骑
-- 🛍️ **商店购买**: 浏览和购买游戏内物品
-- ⚡ **技能系统**: 施放角色技能，增强游戏体验
-
-### 📊 数据管理功能
-- 👤 **用户档案**: 获取详细的用户信息和统计数据
-- 🏷️ **标签管理**: 创建和管理任务标签，更好地组织任务
-- 📬 **通知中心**: 查看和管理系统通知
-- 📦 **物品清单**: 查看拥有的所有物品和装备
-
-### 🤖 AI 集成特色
-- 🧠 **智能对话**: 通过自然语言与 AI 助手交互
-- 📝 **任务建议**: AI 可以根据您的需求智能创建任务
-- 📈 **进度跟踪**: 自动跟踪和报告您的进展情况
-- 🎨 **个性化体验**: 根据您的习惯提供定制化建议
-
-## 🚀 快速开始
+## 快速开始
 
 ### 前置要求
-- Node.js 18+ 
-- npm 或 yarn
+
+- [Bun](https://bun.sh) 1.0+
 - 有效的 Habitica 账户
 
-### 安装步骤
+### MCP 客户端配置
 
-1. **克隆项目**
-```bash
-git clone https://github.com/ibreaker/habitica-mcp-server.git
-cd habitica-mcp-server
-```
+最简单的使用方式是通过 `bunx` —— 无需安装。
 
-2. **安装依赖**
-```bash
-bun install
-```
-
-3. **配置 API 凭据** (见下方配置章节)
-
-4. **启动服务器**
-```bash
-bun run start
-```
-
-## ⚙️ 配置
-
-### 获取 Habitica API 凭据
-
-1. 登录 [Habitica](https://habitica.com)
-2. 点击右上角头像 → **Settings**
-3. 选择 **API** 选项卡
-4. 复制 **User ID** 和 **API Token**
-
-### 设置环境变量
-
-**方法一：使用环境变量**
-```bash
-export HABITICA_USER_ID="your-user-id-here"
-export HABITICA_API_TOKEN="your-api-token-here"
-```
-
-**方法二：创建 .env 文件**
-```bash
-# 在项目根目录创建 .env 文件
-HABITICA_USER_ID=your-user-id-here
-HABITICA_API_TOKEN=your-api-token-here
-```
-
-
-> ⚠️ **安全提醒**: 请勿将 API 凭据提交到版本控制系统中
-
-## 🎯 使用方法
-
-### 启动服务器
-```bash
-# 生产环境
-bun run start
-
-# 开发环境 (支持热重载)
-bun run dev
-```
-
-### 与 MCP 客户端集成
-
-这个服务器遵循 Model Context Protocol (MCP) 标准，可以与各种支持 MCP 的 AI 客户端集成使用。
-
+**Claude Desktop** (`~/Library/Application Support/Claude/claude_desktop_config.json`):
 ```json
 {
   "mcpServers": {
-    "habitica-mcp-server": {
+    "habitica": {
       "command": "bunx",
-      "args": ["-y", "habitica-mcp-server"],
+      "args": ["github:mikedfunk/habitica-mcp-server"],
       "env": {
-        "HABITICA_USER_ID": "your-id",
-        "HABITICA_API_TOKEN": "your-token",
-        "MCP_LANG": "zh-CN"  // or en
+        "HABITICA_USER_ID": "your-user-id",
+        "HABITICA_API_TOKEN": "your-api-token"
       }
     }
   }
 }
 ```
 
-
-### 示例对话
+**Claude Code** (`.claude/settings.json` 或全局 `~/.claude/settings.json`):
+```json
+{
+  "mcpServers": {
+    "habitica": {
+      "command": "bunx",
+      "args": ["github:mikedfunk/habitica-mcp-server"],
+      "env": {
+        "HABITICA_USER_ID": "your-user-id",
+        "HABITICA_API_TOKEN": "your-api-token"
+      }
+    }
+  }
+}
 ```
-用户: "帮我创建一个学习 Python 的习惯"
-AI: "好的，我来为您创建一个学习 Python 的习惯任务..."
 
-用户: "查看我今天的任务"
-AI: "让我为您查看今天的任务列表..."
+如需中文回复，请设置 `MCP_LANG=zh-CN`。
 
-用户: "给我的项目任务添加一个清单项目：'审核代码'"
-AI: "已为您的项目任务添加清单项目'审核代码'！"
+### 获取 Habitica API 凭据
 
-用户: "我完成了锻炼，帮我记录一下"
-AI: "恭喜！我来为您记录锻炼完成情况..."
-```
+1. 登录 [Habitica](https://habitica.com)
+2. 点击头像 → **设置** → **API**
+3. 复制 **User ID** 和 **API Token**
 
 ## 可用工具
 
-### 用户相关
-- `get_user_profile`: 获取用户档案信息
-- `get_stats`: 获取用户统计信息
-- `get_inventory`: 获取物品清单
+### 用户
+| 工具 | 描述 |
+|------|-------------|
+| `get_user_profile` | 获取完整用户档案 |
+| `get_stats` | 获取用户属性 (HP, MP, XP, 金币, 等级) |
+| `get_inventory` | 获取所有拥有的物品 |
+| `toggle_sleep` | 在客栈休息 (暂停每日任务) |
+| `revive` | 死亡后复活 |
+| `allocate_stat` | 分配属性点 (力量/智力/体质/感知) |
 
-### 任务管理
-- `get_tasks`: 获取任务列表（可指定类型：habits, dailys, todos, rewards）
-- `create_task`: 创建新任务
-- `update_task`: 更新任务
-- `delete_task`: 删除任务
-- `score_task`: 完成任务或记录习惯
+### 任务
+| 工具 | 描述 |
+|------|-------------|
+| `get_tasks` | 列出任务 (可选按类型筛选) |
+| `create_task` | 创建习惯、每日任务、待办事项或奖励 |
+| `update_task` | 更新任务文本、备注或完成状态 |
+| `delete_task` | 删除任务 |
+| `score_task` | 完成任务或记录习惯 |
+| `reorder_task` | 将任务移动到指定位置 |
+| `clear_completed_todos` | 清除所有已完成的待办事项 |
 
-### 清单管理
-- `get_task_checklist`: 获取任务的清单项目
-- `add_checklist_item`: 向任务添加清单项目
-- `update_checklist_item`: 更新清单项目
-- `delete_checklist_item`: 删除清单项目
-- `score_checklist_item`: 为清单项目评分（标记完成/未完成）
+### 清单
+| 工具 | 描述 |
+|------|-------------|
+| `get_task_checklist` | 列出任务的清单项目 |
+| `add_checklist_item` | 向任务添加清单项目 |
+| `update_checklist_item` | 更新清单项目文本或完成状态 |
+| `delete_checklist_item` | 删除清单项目 |
+| `score_checklist_item` | 切换清单项目完成/未完成 |
 
-### 标签管理
-- `get_tags`: 获取标签列表
-- `create_tag`: 创建新标签
+### 标签
+| 工具 | 描述 |
+|------|-------------|
+| `get_tags` | 列出所有标签 |
+| `create_tag` | 创建新标签 |
+| `update_tag` | 重命名标签 |
+| `delete_tag` | 删除标签 |
 
 ### 宠物和坐骑
-- `get_pets`: 获取宠物列表
-- `feed_pet`: 喂养宠物
-- `hatch_pet`: 孵化宠物
-- `get_mounts`: 获取坐骑列表
-- `equip_item`: 装备宠物、坐骑或装备
+| 工具 | 描述 |
+|------|-------------|
+| `get_pets` | 列出拥有的宠物 |
+| `feed_pet` | 喂养宠物 |
+| `hatch_pet` | 用孵化药水孵化宠物 |
+| `get_mounts` | 列出拥有的坐骑 |
+| `equip_item` | 装备宠物、坐骑或装备 |
 
-### 商店和购买
-- `get_shop`: 获取商店物品列表
-- `buy_item`: 购买商店物品
-- `buy_reward`: 购买奖励
+### 商店和奖励
+| 工具 | 描述 |
+|------|-------------|
+| `get_shop` | 浏览商店 (市场、任务商店等) |
+| `buy_item` | 购买商店物品 |
+| `buy_reward` | 购买自定义奖励 |
 
-### 通知管理
-- `get_notifications`: 获取通知列表
-- `read_notification`: 标记通知为已读
+### 技能
+| 工具 | 描述 |
+|------|-------------|
+| `cast_spell` | 施放职业技能 |
 
-### 技能系统
-- `cast_spell`: 施放技能
+### 通知
+| 工具 | 描述 |
+|------|-------------|
+| `get_notifications` | 列出通知 |
+| `read_notification` | 将通知标记为已读 |
 
-## 📖 API 使用示例
-
-### 创建任务
-```json
-{
-  "type": "todo",
-  "text": "完成项目文档",
-  "notes": "包括API文档和用户指南",
-  "difficulty": 1.5,
-  "priority": 2,
-  "checklist": [
-    {"text": "编写API文档", "completed": false},
-    {"text": "创建用户指南", "completed": false},
-    {"text": "审核和校对", "completed": false}
-  ]
-}
-```
-
-### 完成任务
-```json
-{
-  "taskId": "task-id-here",
-  "direction": "up"
-}
-```
-
-### 获取特定类型的任务
-```json
-{
-  "type": "todos"
-}
-```
-
-### 宠物管理
-```json
-{
-  "pet": "Wolf-Base",
-  "food": "Meat"
-}
-```
-
-### 购买物品
-```json
-{
-  "itemKey": "armor_warrior_1",
-  "quantity": 1
-}
-```
-
-### 清单管理
-```json
-// 添加清单项目
-{
-  "taskId": "任务ID",
-  "text": "研究需求"
-}
-
-// 更新清单项目
-{
-  "taskId": "任务ID",
-  "itemId": "清单项目ID",
-  "text": "更新的项目文本",
-  "completed": true
-}
-
-// 为清单项目评分（切换完成状态）
-{
-  "taskId": "任务ID",
-  "itemId": "清单项目ID"
-}
-```
+### 社交
+| 工具 | 描述 |
+|------|-------------|
+| `get_groups` | 列出群组 (队伍、公会) |
+| `get_party` | 获取当前队伍信息 |
+| `send_private_message` | 向成员发送私信 |
+| `get_inbox` | 获取收件箱消息 |
 
 ## 任务类型
 
-- `habit`: 习惯（可以正向或负向记录）
-- `daily`: 日常任务（每天重置）
-- `todo`: 待办事项（一次性任务）
-- `reward`: 奖励（可以用金币购买）
+| 值 | 描述 |
+|-------|-------------|
+| `habit` | 可重复的习惯 (正向或负向记录) |
+| `daily` | 每日重置的日常任务 |
+| `todo` | 一次性待办事项 |
+| `reward` | 可用金币购买的奖励 |
 
-## 难度等级
+## 难度 / 优先级
 
-- `0.1`: 简单
-- `1`: 中等
-- `1.5`: 困难
-- `2`: 极难
+| 值 | 标签 |
+|-------|-------|
+| `0.1` | 简单 / 低 |
+| `1` | 中等 |
+| `1.5` | 困难 / 高 |
+| `2` | 非常困难 / 紧急 |
 
-## 优先级
+## 开发
 
-- `0.1`: 低
-- `1`: 中
-- `1.5`: 高
-- `2`: 极高
-
-## 🔧 故障排除
-
-### 常见问题
-
-**问题**: 服务器启动失败
-```
-解决方案: 
-1. 检查 Node.js 版本是否为 18+
-2. 确认已正确设置环境变量
-3. 验证 API 凭据是否有效
-```
-
-**问题**: API 调用失败
-```
-解决方案:
-1. 检查网络连接
-2. 验证 Habitica API 凭据
-3. 确认 API 限制是否达到上限
-```
-
-**问题**: 找不到任务或宠物
-```
-解决方案:
-1. 确认任务 ID 正确
-2. 检查任务是否存在于 Habitica 中
-3. 验证用户权限
-```
-
-### 调试模式
 ```bash
-# 启用详细日志
-DEBUG=* bun run start
+git clone https://github.com/mikedfunk/habitica-mcp-server.git
+cd habitica-mcp-server
+bun install
+
+# 运行
+bun src/index.ts
+
+# 类型检查
+bun run typecheck
+
+# 测试
+bun test
 ```
 
-### 获取帮助
-- 📚 查看 [Habitica API 文档](https://habitica.com/apidoc/)
-- 🐛 提交 [Issues](https://github.com/ibreaker/habitica-mcp-server/issues)
+## 故障排除
 
-## 🤝 贡献指南
+**服务器无法启动** — 请检查 `HABITICA_USER_ID` 和 `HABITICA_API_TOKEN` 是否已正确设置。
 
-我们欢迎各种形式的贡献！
+**API 错误** — 在 Habitica → 设置 → API 中验证您的凭据。检查是否已达到速率限制。
 
-### 如何贡献
-1. Fork 本项目
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 创建 Pull Request
+**找不到任务或宠物** — 确认 ID 正确。ID 是可在 `get_tasks` / `get_pets` 输出中查看的 UUID。
 
-### 开发指南
-- 遵循现有代码风格
-- 添加适当的测试
-- 更新相关文档
-- 确保所有测试通过
+## 许可证
 
-## 📄 许可证
-
-本项目基于 MIT 许可证开源 - 查看 [LICENSE](LICENSE) 文件了解详情。
-
-## 🌟 致谢
-
-- 感谢 [Habitica](https://habitica.com) 提供优秀的 API
-- 感谢 [Anthropic](https://anthropic.com) 的 MCP 协议
-- 感谢所有贡献者和用户的支持
+MIT — 查看 [LICENSE](LICENSE)。
 
 ---
 
 <div align="center">
-  <b>让 AI 成为您的 Habitica 任务管理助手！</b>
-</div> 
+  <b>让 AI 成为您的 Habitica 助手。</b>
+</div>

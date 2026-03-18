@@ -163,9 +163,6 @@ bun run typecheck
 
 # Tests
 bun test
-
-# Build
-bun run build
 ```
 
 ## Troubleshooting
