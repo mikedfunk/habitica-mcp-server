@@ -39,7 +39,10 @@ export async function feedPet(pet: string, food: string): Promise<ToolResult> {
 }
 
 export async function hatchPet(egg: string, hatchingPotion: string): Promise<ToolResult> {
-  await fetchHabiticaApiResponse<Record<string, never>>('POST', `/user/hatch/${egg}/${hatchingPotion}`);
+  await fetchHabiticaApiResponse<Record<string, never>>(
+    'POST',
+    `/user/hatch/${egg}/${hatchingPotion}`,
+  );
 
   return {
     content: [

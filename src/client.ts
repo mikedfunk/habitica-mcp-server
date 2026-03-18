@@ -1,3 +1,5 @@
+import { HabiticaApiError } from './errors.js';
+import { logger } from './logger.js';
 import type { HabiticaApiResponse } from './types.js';
 
 const HABITICA_API_BASE = 'https://habitica.com/api/v3';
@@ -10,7 +12,12 @@ function getApiToken(): string {
   return process.env.HABITICA_API_TOKEN ?? '';
 }
 
-function buildRequestHeaders(): { 'x-api-user': string; 'x-api-key': string; 'x-client': string; 'Content-Type': string } {
+function buildRequestHeaders(): {
+  'x-api-user': string;
+  'x-api-key': string;
+  'x-client': string;
+  'Content-Type': string;
+} {
   const userId = getUserId();
   return {
     'x-api-user': userId,
@@ -25,6 +32,7 @@ export async function fetchHabiticaApiResponse<T>(
   path: string,
   body?: object | null,
 ): Promise<HabiticaApiResponse<T>> {
+  const url = `${HABITICA_API_BASE}${path}`;
   const fetchOptions: RequestInit = {
     method,
     headers: buildRequestHeaders(),
@@ -32,17 +40,30 @@ export async function fetchHabiticaApiResponse<T>(
   if (body !== undefined) {
     fetchOptions.body = JSON.stringify(body);
   }
-  const response = await fetch(`${HABITICA_API_BASE}${path}`, fetchOptions);
+
+  logger.debug(`API Request: ${method} ${path}`, { body: body ?? null });
+
+  const response = await fetch(url, fetchOptions);
 
   if (!response.ok) {
     const errorData = (await response.json().catch(() => ({}))) as {
       message?: string;
       error?: string;
     };
-    throw new Error(
-      errorData.message ?? errorData.error ?? `HTTP ${response.status}: ${response.statusText}`,
-    );
+    const errorMessage =
+      errorData.message ?? errorData.error ?? `HTTP ${response.status}: ${response.statusText}`;
+
+    logger.error(`API Error: ${method} ${path}`, {
+      status: response.status,
+      message: errorMessage,
+      response: errorData,
+    });
+
+    throw new HabiticaApiError(errorMessage, response.status, path, errorData);
   }
 
-  return response.json() as Promise<HabiticaApiResponse<T>>;
+  const result = (await response.json()) as HabiticaApiResponse<T>;
+  logger.debug(`API Response: ${method} ${path}`, { success: result.success });
+
+  return result;
 }
