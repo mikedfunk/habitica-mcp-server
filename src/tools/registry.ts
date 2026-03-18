@@ -14,13 +14,8 @@ import {
   updateChecklistItem,
 } from './handlers/checklist.js';
 import { equipItem, feedPet, getMounts, getPets, hatchPet } from './handlers/pets.js';
-import {
-  buyItem,
-  buyReward,
-  getNotifications,
-  getShop,
-  readNotification,
-} from './handlers/shop.js';
+import { buyItem, buyReward, getShop } from './handlers/shop.js';
+import { getNotifications, readNotification } from './handlers/notifications.js';
 import { getGroups, getInbox, getParty, sendPrivateMessage } from './handlers/social.js';
 import {
   addTagToTask,
