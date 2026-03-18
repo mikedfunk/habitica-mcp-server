@@ -16,16 +16,15 @@ jobs:
       - run: bun install
       - name: Run tests with coverage
         run: |
-          bunx c8 --reporter=lcov --reporter=text --all --src=src bun test
-          echo "=== Coverage files ==="
-          ls -la *.info 2>/dev/null || echo "No .info files in root"
-          ls -la coverage/ 2>/dev/null || echo "No coverage directory"
-          find . -name "*.info" -type f 2>/dev/null | head -10
+          mkdir -p coverage
+          bunx c8 --reporter=lcov --reporter=text --all --src=src --report-dir=coverage bun test
+          echo "=== Coverage output ==="
+          ls -la coverage/
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: lcov.info
+          path: coverage/lcov.info
           retention-days: 1
           if-no-files-found: warn
       - name: SonarQube Scan
