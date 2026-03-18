@@ -46,7 +46,7 @@ export async function castSpell(spellId: string, targetId?: string): Promise<Too
   const endpoint = targetId
     ? `/user/class/cast/${spellId}?targetId=${targetId}`
     : `/user/class/cast/${spellId}`;
-  await fetchHabiticaApiResponse<unknown>('POST', endpoint);
+  await fetchHabiticaApiResponse<Record<string, never>>('POST', endpoint);
 
   return {
     content: [
@@ -75,7 +75,7 @@ export async function toggleSleep(): Promise<ToolResult> {
 }
 
 export async function revive(): Promise<ToolResult> {
-  await fetchHabiticaApiResponse<unknown>('POST', '/user/revive');
+  await fetchHabiticaApiResponse<Record<string, never>>('POST', '/user/revive');
 
   return {
     content: [

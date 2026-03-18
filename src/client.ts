@@ -10,7 +10,7 @@ function getApiToken(): string {
   return process.env.HABITICA_API_TOKEN ?? '';
 }
 
-function buildRequestHeaders(): Record<string, string> {
+function buildRequestHeaders(): { 'x-api-user': string; 'x-api-key': string; 'x-client': string; 'Content-Type': string } {
   const userId = getUserId();
   return {
     'x-api-user': userId,
@@ -23,7 +23,7 @@ function buildRequestHeaders(): Record<string, string> {
 export async function fetchHabiticaApiResponse<T>(
   method: string,
   path: string,
-  body?: unknown,
+  body?: object | null,
 ): Promise<HabiticaApiResponse<T>> {
   const fetchOptions: RequestInit = {
     method,

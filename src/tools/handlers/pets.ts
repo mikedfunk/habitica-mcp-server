@@ -39,7 +39,7 @@ export async function feedPet(pet: string, food: string): Promise<ToolResult> {
 }
 
 export async function hatchPet(egg: string, hatchingPotion: string): Promise<ToolResult> {
-  await fetchHabiticaApiResponse<unknown>('POST', `/user/hatch/${egg}/${hatchingPotion}`);
+  await fetchHabiticaApiResponse<Record<string, never>>('POST', `/user/hatch/${egg}/${hatchingPotion}`);
 
   return {
     content: [
@@ -68,7 +68,7 @@ export async function getMounts(): Promise<ToolResult> {
 }
 
 export async function equipItem(type: EquipType, key: string): Promise<ToolResult> {
-  await fetchHabiticaApiResponse<unknown>('POST', `/user/equip/${type}/${key}`);
+  await fetchHabiticaApiResponse<Record<string, never>>('POST', `/user/equip/${type}/${key}`);
 
   return {
     content: [

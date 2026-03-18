@@ -1,10 +1,11 @@
 import { fetchHabiticaApiResponse } from '../../client.js';
 import { t } from '../../i18n.js';
+import type { Group, PrivateMessage } from '../../types.js';
 import type { ToolResult } from '../types.js';
 
 export async function getGroups(type?: string): Promise<ToolResult> {
   const endpoint = type ? `/groups?type=${type}` : '/groups?type=party,guilds';
-  const apiResponse = await fetchHabiticaApiResponse<unknown>('GET', endpoint);
+  const apiResponse = await fetchHabiticaApiResponse<Group[]>('GET', endpoint);
 
   return {
     content: [
@@ -17,7 +18,7 @@ export async function getGroups(type?: string): Promise<ToolResult> {
 }
 
 export async function getParty(): Promise<ToolResult> {
-  const apiResponse = await fetchHabiticaApiResponse<unknown>('GET', '/groups/party');
+  const apiResponse = await fetchHabiticaApiResponse<Group>('GET', '/groups/party');
 
   return {
     content: [
@@ -30,7 +31,7 @@ export async function getParty(): Promise<ToolResult> {
 }
 
 export async function sendPrivateMessage(toUserId: string, message: string): Promise<ToolResult> {
-  await fetchHabiticaApiResponse<unknown>('POST', '/members/send-private-message', {
+  await fetchHabiticaApiResponse<Record<string, never>>('POST', '/members/send-private-message', {
     message,
     toUserId,
   });
@@ -49,7 +50,7 @@ export async function sendPrivateMessage(toUserId: string, message: string): Pro
 }
 
 export async function getInbox(page = 0): Promise<ToolResult> {
-  const apiResponse = await fetchHabiticaApiResponse<unknown>(
+  const apiResponse = await fetchHabiticaApiResponse<{ messages: PrivateMessage[] }>(
     'GET',
     `/inbox/messages?page=${page}`,
   );

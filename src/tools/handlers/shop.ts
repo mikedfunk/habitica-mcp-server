@@ -1,10 +1,10 @@
 import { fetchHabiticaApiResponse } from '../../client.js';
 import { t } from '../../i18n.js';
-import type { ShopType } from '../../types.js';
+import type { HabiticaNotification, Shop, ShopType } from '../../types.js';
 import type { ToolResult } from '../types.js';
 
 export async function getShop(shopType: ShopType = 'market'): Promise<ToolResult> {
-  const apiResponse = await fetchHabiticaApiResponse<unknown>('GET', `/shops/${shopType}`);
+  const apiResponse = await fetchHabiticaApiResponse<Shop>('GET', `/shops/${shopType}`);
 
   return {
     content: [
@@ -55,7 +55,7 @@ export async function buyReward(key: string): Promise<ToolResult> {
 }
 
 export async function getNotifications(): Promise<ToolResult> {
-  const apiResponse = await fetchHabiticaApiResponse<unknown>('GET', '/notifications');
+  const apiResponse = await fetchHabiticaApiResponse<HabiticaNotification[]>('GET', '/notifications');
 
   return {
     content: [
@@ -68,7 +68,7 @@ export async function getNotifications(): Promise<ToolResult> {
 }
 
 export async function readNotification(notificationId: string): Promise<ToolResult> {
-  await fetchHabiticaApiResponse<unknown>('POST', `/notifications/${notificationId}/read`);
+  await fetchHabiticaApiResponse<Record<string, never>>('POST', `/notifications/${notificationId}/read`);
 
   return {
     content: [

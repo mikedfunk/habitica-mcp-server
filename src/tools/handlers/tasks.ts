@@ -97,7 +97,7 @@ export async function deleteTask(taskId: string): Promise<ToolResult> {
 }
 
 export async function reorderTask(taskId: string, position: number): Promise<ToolResult> {
-  await fetchHabiticaApiResponse<unknown>('POST', `/tasks/${taskId}/move/to/${position}`);
+  await fetchHabiticaApiResponse<Record<string, never>>('POST', `/tasks/${taskId}/move/to/${position}`);
 
   return {
     content: [
@@ -113,7 +113,7 @@ export async function reorderTask(taskId: string, position: number): Promise<Too
 }
 
 export async function clearCompletedTodos(): Promise<ToolResult> {
-  await fetchHabiticaApiResponse<unknown>('POST', '/tasks/clearCompletedTodos');
+  await fetchHabiticaApiResponse<Record<string, never>>('POST', '/tasks/clearCompletedTodos');
 
   return {
     content: [
