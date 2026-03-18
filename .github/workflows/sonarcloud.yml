@@ -15,7 +15,12 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install
       - name: Run tests with coverage
-        run: bunx c8 --reporter=lcov --reporter=text bun test
+        run: |
+          bunx c8 --reporter=lcov --reporter=text --all --src=src bun test
+          echo "Coverage files generated:"
+          ls -la coverage/ 2>/dev/null || echo "No coverage directory found"
+          echo "Checking for lcov.info..."
+          find . -name "lcov.info" -type f 2>/dev/null | head -5
         continue-on-error: true
       - name: Check coverage file
         run: |
