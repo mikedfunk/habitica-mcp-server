@@ -135,7 +135,6 @@ export interface CreateTaskInput {
 }
 
 export interface UpdateTaskInput {
-  taskId: string;
   text?: string;
   notes?: string;
   completed?: boolean;
@@ -144,8 +143,6 @@ export interface UpdateTaskInput {
 }
 
 export interface UpdateChecklistItemInput {
-  taskId: string;
-  itemId: string;
   text?: string;
   completed?: boolean;
 }

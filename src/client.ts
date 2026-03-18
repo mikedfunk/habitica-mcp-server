@@ -2,13 +2,19 @@ import type { HabiticaApiResponse } from './types.js';
 
 const HABITICA_API_BASE = 'https://habitica.com/api/v3';
 
-const userId = process.env['HABITICA_USER_ID'] ?? '';
-const apiToken = process.env['HABITICA_API_TOKEN'] ?? '';
+function getUserId(): string {
+  return process.env['HABITICA_USER_ID'] ?? '';
+}
+
+function getApiToken(): string {
+  return process.env['HABITICA_API_TOKEN'] ?? '';
+}
 
 function buildRequestHeaders(): Record<string, string> {
+  const userId = getUserId();
   return {
     'x-api-user': userId,
-    'x-api-key': apiToken,
+    'x-api-key': getApiToken(),
     'x-client': `${userId}-habitica-mcp-server`,
     'Content-Type': 'application/json',
   };
