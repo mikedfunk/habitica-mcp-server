@@ -1,65 +1,54 @@
-import type { ToolResult } from './types.js';
-import type { TaskListType, CreateTaskInput, UpdateTaskInput, UpdateChecklistItemInput, EquipType, ShopType } from '../types.js';
-
+import type {
+  CreateTaskInput,
+  EquipType,
+  ShopType,
+  TaskListType,
+  UpdateChecklistItemInput,
+  UpdateTaskInput,
+} from '../types.js';
 import {
-  getTasks,
-  createTask,
-  scoreTask,
-  updateTask,
-  deleteTask,
-  reorderTask,
-  clearCompletedTodos,
-} from './handlers/tasks.js';
-
-import {
-  getTaskChecklist,
   addChecklistItem,
-  updateChecklistItem,
   deleteChecklistItem,
+  getTaskChecklist,
   scoreChecklistItem,
+  updateChecklistItem,
 } from './handlers/checklist.js';
-
+import { equipItem, feedPet, getMounts, getPets, hatchPet } from './handlers/pets.js';
 import {
-  getUserProfile,
-  getStats,
-  getInventory,
-  castSpell,
-  toggleSleep,
-  revive,
-  allocateStat,
-} from './handlers/user.js';
-
-import {
-  getPets,
-  feedPet,
-  hatchPet,
-  getMounts,
-  equipItem,
-} from './handlers/pets.js';
-
-import {
-  getTags,
-  createTag,
-  addTagToTask,
-  removeTagFromTask,
-  updateTag,
-  deleteTag,
-} from './handlers/tags.js';
-
-import {
-  getShop,
   buyItem,
   buyReward,
   getNotifications,
+  getShop,
   readNotification,
 } from './handlers/shop.js';
-
+import { getGroups, getInbox, getParty, sendPrivateMessage } from './handlers/social.js';
 import {
-  getGroups,
-  getParty,
-  sendPrivateMessage,
-  getInbox,
-} from './handlers/social.js';
+  addTagToTask,
+  createTag,
+  deleteTag,
+  getTags,
+  removeTagFromTask,
+  updateTag,
+} from './handlers/tags.js';
+import {
+  clearCompletedTodos,
+  createTask,
+  deleteTask,
+  getTasks,
+  reorderTask,
+  scoreTask,
+  updateTask,
+} from './handlers/tasks.js';
+import {
+  allocateStat,
+  castSpell,
+  getInventory,
+  getStats,
+  getUserProfile,
+  revive,
+  toggleSleep,
+} from './handlers/user.js';
+import type { ToolResult } from './types.js';
 
 export type ToolHandler = (args: Record<string, unknown>) => Promise<ToolResult>;
 
@@ -91,8 +80,7 @@ export const toolRegistry: Record<string, ToolHandler> = {
 
   create_tag: async (args) => createTag(args['name'] as string),
 
-  add_tag_to_task: async (args) =>
-    addTagToTask(args['taskId'] as string, args['tagId'] as string),
+  add_tag_to_task: async (args) => addTagToTask(args['taskId'] as string, args['tagId'] as string),
 
   remove_tag_from_task: async (args) =>
     removeTagFromTask(args['taskId'] as string, args['tagId'] as string),
@@ -105,18 +93,15 @@ export const toolRegistry: Record<string, ToolHandler> = {
 
   feed_pet: async (args) => feedPet(args['pet'] as string, args['food'] as string),
 
-  hatch_pet: async (args) =>
-    hatchPet(args['egg'] as string, args['hatchingPotion'] as string),
+  hatch_pet: async (args) => hatchPet(args['egg'] as string, args['hatchingPotion'] as string),
 
   get_mounts: async () => getMounts(),
 
-  equip_item: async (args) =>
-    equipItem(args['type'] as EquipType, args['key'] as string),
+  equip_item: async (args) => equipItem(args['type'] as EquipType, args['key'] as string),
 
   get_notifications: async () => getNotifications(),
 
-  read_notification: async (args) =>
-    readNotification(args['notificationId'] as string),
+  read_notification: async (args) => readNotification(args['notificationId'] as string),
 
   get_shop: async (args) => getShop(args['shopType'] as ShopType | undefined),
 
@@ -132,7 +117,7 @@ export const toolRegistry: Record<string, ToolHandler> = {
     updateChecklistItem(
       args['taskId'] as string,
       args['itemId'] as string,
-      args as unknown as UpdateChecklistItemInput
+      args as unknown as UpdateChecklistItemInput,
     ),
 
   delete_checklist_item: async (args) =>
@@ -141,8 +126,7 @@ export const toolRegistry: Record<string, ToolHandler> = {
   score_checklist_item: async (args) =>
     scoreChecklistItem(args['taskId'] as string, args['itemId'] as string),
 
-  reorder_task: async (args) =>
-    reorderTask(args['taskId'] as string, args['position'] as number),
+  reorder_task: async (args) => reorderTask(args['taskId'] as string, args['position'] as number),
 
   clear_completed_todos: async () => clearCompletedTodos(),
 

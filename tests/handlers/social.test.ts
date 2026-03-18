@@ -1,9 +1,9 @@
-import { describe, it, expect, mock, beforeEach } from 'bun:test';
+import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import {
   getGroups,
+  getInbox,
   getParty,
   sendPrivateMessage,
-  getInbox,
 } from '../../src/tools/handlers/social.js';
 import { setupMockEnv } from '../utils/mock-fetch.js';
 
@@ -28,11 +28,12 @@ describe('Social Handlers', () => {
         { id: 'group-1', name: 'My Party', type: 'party' },
         { id: 'group-2', name: 'Coding Guild', type: 'guild' },
       ];
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: groups }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: groups }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await getGroups();
@@ -45,11 +46,12 @@ describe('Social Handlers', () => {
     });
 
     it('fetches groups with specified type filter', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: [] }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: [] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       await getGroups('guilds');
@@ -68,11 +70,12 @@ describe('Social Handlers', () => {
         memberCount: 4,
         quest: { key: 'dilatory_derby', active: true },
       };
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: party }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: party }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await getParty();
@@ -86,11 +89,12 @@ describe('Social Handlers', () => {
 
   describe('sendPrivateMessage', () => {
     it('sends a private message to a user', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: {} }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: {} }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await sendPrivateMessage('user-123', 'Hello there!');
@@ -112,11 +116,12 @@ describe('Social Handlers', () => {
         { id: 'msg-1', text: 'Hello!', user: 'Friend' },
         { id: 'msg-2', text: 'Want to quest?', user: 'Party Leader' },
       ];
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: messages }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: messages }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await getInbox();
@@ -128,11 +133,12 @@ describe('Social Handlers', () => {
     });
 
     it('fetches inbox messages with specified page', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: [] }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: [] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       await getInbox(2);

@@ -1,7 +1,13 @@
 import { fetchHabiticaApiResponse } from '../../client.js';
 import { t } from '../../i18n.js';
+import type {
+  CreateTaskInput,
+  HabiticaTask,
+  ScoreTaskResult,
+  TaskListType,
+  UpdateTaskInput,
+} from '../../types.js';
 import type { ToolResult } from '../types.js';
-import type { HabiticaTask, TaskListType, CreateTaskInput, UpdateTaskInput, ScoreTaskResult } from '../../types.js';
 
 export async function getTasks(type?: TaskListType): Promise<ToolResult> {
   const endpoint = type ? `/tasks/user?type=${type}` : '/tasks/user';
@@ -27,17 +33,20 @@ export async function createTask(taskData: CreateTaskInput): Promise<ToolResult>
         type: 'text',
         text: t(
           `Successfully created task: ${task.text} (ID: ${task.id})`,
-          `成功创建任务: ${task.text} (ID: ${task.id})`
+          `成功创建任务: ${task.text} (ID: ${task.id})`,
         ),
       },
     ],
   };
 }
 
-export async function scoreTask(taskId: string, direction: 'up' | 'down' = 'up'): Promise<ToolResult> {
+export async function scoreTask(
+  taskId: string,
+  direction: 'up' | 'down' = 'up',
+): Promise<ToolResult> {
   const apiResponse = await fetchHabiticaApiResponse<ScoreTaskResult>(
     'POST',
-    `/tasks/${taskId}/score/${direction}`
+    `/tasks/${taskId}/score/${direction}`,
   );
   const result = apiResponse.data;
 
@@ -60,7 +69,7 @@ export async function updateTask(taskId: string, updates: UpdateTaskInput): Prom
   const apiResponse = await fetchHabiticaApiResponse<HabiticaTask>(
     'PUT',
     `/tasks/${taskId}`,
-    updates
+    updates,
   );
   const task = apiResponse.data;
 
@@ -81,10 +90,7 @@ export async function deleteTask(taskId: string): Promise<ToolResult> {
     content: [
       {
         type: 'text',
-        text: t(
-          `Successfully deleted task (ID: ${taskId})`,
-          `成功删除任务 (ID: ${taskId})`
-        ),
+        text: t(`Successfully deleted task (ID: ${taskId})`, `成功删除任务 (ID: ${taskId})`),
       },
     ],
   };
@@ -99,7 +105,7 @@ export async function reorderTask(taskId: string, position: number): Promise<Too
         type: 'text',
         text: t(
           `Successfully moved task (ID: ${taskId}) to position ${position}`,
-          `成功将任务 (ID: ${taskId}) 移动到位置 ${position}`
+          `成功将任务 (ID: ${taskId}) 移动到位置 ${position}`,
         ),
       },
     ],

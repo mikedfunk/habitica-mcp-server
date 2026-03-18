@@ -1,9 +1,9 @@
-import { describe, it, expect, mock, beforeEach } from 'bun:test';
+import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import {
-  getShop,
   buyItem,
   buyReward,
   getNotifications,
+  getShop,
   readNotification,
 } from '../../src/tools/handlers/shop.js';
 import { setupMockEnv } from '../utils/mock-fetch.js';
@@ -36,11 +36,12 @@ describe('Shop Handlers', () => {
           },
         ],
       };
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: shopData }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: shopData }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await getShop();
@@ -52,11 +53,12 @@ describe('Shop Handlers', () => {
     });
 
     it('fetches specified shop type', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: { identifier: 'questShop' } }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: { identifier: 'questShop' } }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       await getShop('questShop');
@@ -68,11 +70,12 @@ describe('Shop Handlers', () => {
 
   describe('buyItem', () => {
     it('buys an item with default quantity of 1', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: { gp: 95 } }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: { gp: 95 } }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await buyItem('potion');
@@ -88,11 +91,12 @@ describe('Shop Handlers', () => {
     });
 
     it('buys an item with specified quantity', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: { gp: 85 } }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: { gp: 85 } }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await buyItem('potion', 3);
@@ -106,11 +110,12 @@ describe('Shop Handlers', () => {
 
   describe('buyReward', () => {
     it('buys a reward item', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: { gp: 50 } }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: { gp: 50 } }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await buyReward('reward-key');
@@ -129,11 +134,12 @@ describe('Shop Handlers', () => {
         { id: 'notif-1', type: 'NEW_STUFF', seen: false, read: false },
         { id: 'notif-2', type: 'GROUP_TASK_APPROVED', seen: true, read: true },
       ];
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: notifications }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: notifications }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await getNotifications();
@@ -147,11 +153,12 @@ describe('Shop Handlers', () => {
 
   describe('readNotification', () => {
     it('marks a notification as read', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: {} }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: {} }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await readNotification('notif-1');

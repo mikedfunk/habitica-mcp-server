@@ -21,8 +21,8 @@ if (!HABITICA_USER_ID || !HABITICA_API_TOKEN) {
   console.error(
     t(
       'Error: Please set HABITICA_USER_ID and HABITICA_API_TOKEN environment variables',
-      '错误: 请设置 HABITICA_USER_ID 和 HABITICA_API_TOKEN 环境变量'
-    )
+      '错误: 请设置 HABITICA_USER_ID 和 HABITICA_API_TOKEN 环境变量',
+    ),
   );
   process.exit(1);
 }
@@ -36,7 +36,7 @@ const server = new Server(
     capabilities: {
       tools: {},
     },
-  }
+  },
 );
 
 server.setRequestHandler(ListToolsRequestSchema, async () => {
@@ -50,7 +50,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const toolArgs = (toolArguments ?? {}) as Record<string, unknown>;
 
   const handler = toolRegistry[name];
-  
+
   if (!handler) {
     throw new McpError(ErrorCode.MethodNotFound, t(`Unknown tool: ${name}`, `未知工具: ${name}`));
   }
@@ -66,7 +66,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const errorMessage = apiError.message ?? t('Unknown error', '未知错误');
     throw new McpError(
       ErrorCode.InternalError,
-      t(`Habitica API error: ${errorMessage}`, `Habitica API 错误: ${errorMessage}`)
+      t(`Habitica API error: ${errorMessage}`, `Habitica API 错误: ${errorMessage}`),
     );
   }
 });

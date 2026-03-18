@@ -41,7 +41,7 @@ export async function sendPrivateMessage(toUserId: string, message: string): Pro
         type: 'text',
         text: t(
           `Successfully sent private message to user ${toUserId}`,
-          `成功向用户 ${toUserId} 发送私信`
+          `成功向用户 ${toUserId} 发送私信`,
         ),
       },
     ],
@@ -51,7 +51,7 @@ export async function sendPrivateMessage(toUserId: string, message: string): Pro
 export async function getInbox(page = 0): Promise<ToolResult> {
   const apiResponse = await fetchHabiticaApiResponse<unknown>(
     'GET',
-    `/inbox/messages?page=${page}`
+    `/inbox/messages?page=${page}`,
   );
 
   return {

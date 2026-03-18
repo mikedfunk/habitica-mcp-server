@@ -47,7 +47,7 @@ export const tools = [
           enum: [0.1, 1, 1.5, 2],
           description: t(
             'Difficulty (0.1=easy, 1=medium, 1.5=hard, 2=very hard)',
-            '难度 (0.1=简单, 1=中等, 1.5=困难, 2=极难)'
+            '难度 (0.1=简单, 1=中等, 1.5=困难, 2=极难)',
           ),
         },
         priority: {
@@ -55,7 +55,7 @@ export const tools = [
           enum: [0.1, 1, 1.5, 2],
           description: t(
             'Priority (0.1=low, 1=med, 1.5=high, 2=urgent)',
-            '优先级 (0.1=低, 1=中, 1.5=高, 2=极高)'
+            '优先级 (0.1=低, 1=中, 1.5=高, 2=极高)',
           ),
         },
         checklist: {
@@ -96,7 +96,7 @@ export const tools = [
           enum: ['up', 'down'],
           description: t(
             'Direction (up=positive, down=negative, habits only)',
-            '方向 (up=正向, down=负向，仅适用于习惯)'
+            '方向 (up=正向, down=负向，仅适用于习惯)',
           ),
         },
       },
@@ -419,7 +419,7 @@ export const tools = [
     name: 'score_checklist_item',
     description: t(
       'Score checklist item (mark complete/incomplete)',
-      '为清单项目评分（标记完成/未完成）'
+      '为清单项目评分（标记完成/未完成）',
     ),
     inputSchema: {
       type: 'object',
