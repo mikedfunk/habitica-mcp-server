@@ -3,11 +3,11 @@ import type { HabiticaApiResponse } from './types.js';
 const HABITICA_API_BASE = 'https://habitica.com/api/v3';
 
 function getUserId(): string {
-  return process.env['HABITICA_USER_ID'] ?? '';
+  return process.env.HABITICA_USER_ID ?? '';
 }
 
 function getApiToken(): string {
-  return process.env['HABITICA_API_TOKEN'] ?? '';
+  return process.env.HABITICA_API_TOKEN ?? '';
 }
 
 function buildRequestHeaders(): Record<string, string> {

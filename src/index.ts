@@ -12,10 +12,10 @@ import { setLanguage, t } from './i18n.js';
 import { tools } from './tools/definitions.js';
 import { toolRegistry } from './tools/registry.js';
 
-const HABITICA_USER_ID = process.env['HABITICA_USER_ID'];
-const HABITICA_API_TOKEN = process.env['HABITICA_API_TOKEN'];
+const HABITICA_USER_ID = process.env.HABITICA_USER_ID;
+const HABITICA_API_TOKEN = process.env.HABITICA_API_TOKEN;
 
-setLanguage(process.env['MCP_LANG'] ?? process.env['LANG'] ?? 'en');
+setLanguage(process.env.MCP_LANG ?? process.env.LANG ?? 'en');
 
 if (!HABITICA_USER_ID || !HABITICA_API_TOKEN) {
   console.error(

@@ -19,9 +19,9 @@ export function createMockFetch(defaultResponse: MockResponse = { success: true,
 }
 
 export function setupMockEnv() {
-  process.env['HABITICA_USER_ID'] = 'test-user-id';
-  process.env['HABITICA_API_TOKEN'] = 'test-api-token';
-  process.env['MCP_LANG'] = 'en';
+  process.env.HABITICA_USER_ID = 'test-user-id';
+  process.env.HABITICA_API_TOKEN = 'test-api-token';
+  process.env.MCP_LANG = 'en';
 }
 
 export function createTaskMock(id: string, text: string, type: string, overrides = {}) {
