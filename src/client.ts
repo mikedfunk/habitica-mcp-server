@@ -19,11 +19,14 @@ export async function fetchHabiticaApiResponse<T>(
   path: string,
   body?: unknown
 ): Promise<HabiticaApiResponse<T>> {
-  const response = await fetch(`${HABITICA_API_BASE}${path}`, {
+  const fetchOptions: RequestInit = {
     method,
     headers: buildRequestHeaders(),
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-  });
+  };
+  if (body !== undefined) {
+    fetchOptions.body = JSON.stringify(body);
+  }
+  const response = await fetch(`${HABITICA_API_BASE}${path}`, fetchOptions);
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({})) as { message?: string; error?: string };

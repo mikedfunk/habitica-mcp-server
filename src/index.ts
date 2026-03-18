@@ -671,10 +671,12 @@ const tools = [
 interface ToolContent {
   type: 'text';
   text: string;
+  [key: string]: unknown;
 }
 
 interface ToolResult {
   content: ToolContent[];
+  [key: string]: unknown;
 }
 
 server.setRequestHandler(ListToolsRequestSchema, async () => {
