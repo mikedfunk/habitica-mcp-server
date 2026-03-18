@@ -14,7 +14,8 @@ jobs:
           fetch-depth: 0
       - uses: oven-sh/setup-bun@v2
       - run: bun install
-      - run: bun test --coverage
+      - name: Run tests with coverage
+        run: bunx c8 --reporter=lcov --reporter=text bun test
         continue-on-error: true
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v7.0.0
