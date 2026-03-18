@@ -8,7 +8,7 @@ export interface MockResponse {
 }
 
 export function createMockFetch(defaultResponse: MockResponse = { success: true, data: {} }) {
-  const mockFetch = mock(async (url: string, options?: RequestInit) => {
+  const mockFetch = mock(async (_url: string, _options?: RequestInit) => {
     return new Response(JSON.stringify(defaultResponse), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import { toolRegistry } from '../../src/tools/registry.js';
 import { createTaskMock, createUserMock, setupMockEnv } from '../utils/mock-fetch.js';
 
-const mockFetch = mock(async (url: string, options?: RequestInit) => {
+const mockFetch = mock(async (_url: string, _options?: RequestInit) => {
   return new Response(JSON.stringify({ success: true, data: {} }), {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
@@ -76,7 +76,7 @@ describe('Tool Registry', () => {
           }),
       );
 
-      const result = await toolRegistry['get_tasks']({ type: 'todos' });
+      const result = await toolRegistry.get_tasks({ type: 'todos' });
 
       expect(mockFetch).toHaveBeenCalledTimes(1);
       expect(result.content[0].type).toBe('text');
@@ -92,7 +92,7 @@ describe('Tool Registry', () => {
           }),
       );
 
-      const result = await toolRegistry['create_task']({ type: 'todo', text: 'New Task' });
+      const result = await toolRegistry.create_task({ type: 'todo', text: 'New Task' });
 
       expect(result.content[0].text).toContain('Successfully created task');
     });
@@ -112,7 +112,7 @@ describe('Tool Registry', () => {
           ),
       );
 
-      const result = await toolRegistry['score_task']({ taskId: 'task-1', direction: 'up' });
+      const result = await toolRegistry.score_task({ taskId: 'task-1', direction: 'up' });
 
       expect(result.content[0].text).toContain('Task scored');
     });
@@ -129,7 +129,7 @@ describe('Tool Registry', () => {
           }),
       );
 
-      const result = await toolRegistry['get_user_profile']({});
+      const result = await toolRegistry.get_user_profile({});
 
       expect(result.content[0].text).toContain('Test User');
     });
@@ -144,7 +144,7 @@ describe('Tool Registry', () => {
           }),
       );
 
-      const result = await toolRegistry['get_stats']({});
+      const result = await toolRegistry.get_stats({});
 
       expect(result.content[0].text).toContain('hp');
     });
@@ -166,7 +166,7 @@ describe('Tool Registry', () => {
           }),
       );
 
-      const result = await toolRegistry['get_pets']({});
+      const result = await toolRegistry.get_pets({});
 
       expect(result.content[0].text).toContain('Wolf-Base');
     });
@@ -180,7 +180,7 @@ describe('Tool Registry', () => {
           }),
       );
 
-      const result = await toolRegistry['feed_pet']({ pet: 'Wolf-Base', food: 'Meat' });
+      const result = await toolRegistry.feed_pet({ pet: 'Wolf-Base', food: 'Meat' });
 
       expect(result.content[0].text).toContain('Successfully fed pet');
     });
@@ -196,7 +196,7 @@ describe('Tool Registry', () => {
           }),
       );
 
-      const result = await toolRegistry['get_tags']({});
+      const result = await toolRegistry.get_tags({});
 
       expect(result.content[0].text).toContain('Work');
     });
@@ -210,7 +210,7 @@ describe('Tool Registry', () => {
           }),
       );
 
-      const result = await toolRegistry['create_tag']({ name: 'Health' });
+      const result = await toolRegistry.create_tag({ name: 'Health' });
 
       expect(result.content[0].text).toContain('Successfully created tag');
     });
@@ -226,7 +226,7 @@ describe('Tool Registry', () => {
           }),
       );
 
-      const result = await toolRegistry['get_shop']({ shopType: 'market' });
+      const result = await toolRegistry.get_shop({ shopType: 'market' });
 
       expect(result.content[0].text).toContain('market');
     });
@@ -240,7 +240,7 @@ describe('Tool Registry', () => {
           }),
       );
 
-      const result = await toolRegistry['buy_item']({ itemKey: 'potion', quantity: 2 });
+      const result = await toolRegistry.buy_item({ itemKey: 'potion', quantity: 2 });
 
       expect(result.content[0].text).toContain('Successfully bought');
     });
@@ -259,7 +259,7 @@ describe('Tool Registry', () => {
           }),
       );
 
-      const result = await toolRegistry['get_task_checklist']({ taskId: 'task-1' });
+      const result = await toolRegistry.get_task_checklist({ taskId: 'task-1' });
 
       expect(result.content[0].text).toContain('Task:');
     });
@@ -275,7 +275,7 @@ describe('Tool Registry', () => {
           }),
       );
 
-      const _result = await toolRegistry['get_groups']({ type: 'party' });
+      const _result = await toolRegistry.get_groups({ type: 'party' });
 
       expect(mockFetch).toHaveBeenCalledTimes(1);
     });
@@ -292,7 +292,7 @@ describe('Tool Registry', () => {
           ),
       );
 
-      const result = await toolRegistry['get_party']({});
+      const result = await toolRegistry.get_party({});
 
       expect(result.content[0].text).toContain('My Party');
     });
@@ -308,7 +308,7 @@ describe('Tool Registry', () => {
           }),
       );
 
-      const result = await toolRegistry['toggle_sleep']({});
+      const result = await toolRegistry.toggle_sleep({});
 
       expect(result.content[0].text).toContain('resting');
     });
@@ -322,7 +322,7 @@ describe('Tool Registry', () => {
           }),
       );
 
-      const result = await toolRegistry['revive']({});
+      const result = await toolRegistry.revive({});
 
       expect(result.content[0].text).toContain('Successfully revived');
     });
@@ -337,7 +337,7 @@ describe('Tool Registry', () => {
           }),
       );
 
-      const result = await toolRegistry['allocate_stat']({ stat: 'str' });
+      const result = await toolRegistry.allocate_stat({ stat: 'str' });
 
       expect(result.content[0].text).toContain('str');
     });
