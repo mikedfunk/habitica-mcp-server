@@ -1,0 +1,21 @@
+{
+  "name": "Habitica MCP Server",
+  "image": "mcr.microsoft.com/devcontainers/base:debian-12",
+  "features": {
+    "ghcr.io/rails/devcontainer/features/bun:1": {}
+  },
+  "postCreateCommand": "bun install",
+  "postStartCommand": "git config --global --add safe.directory /workspaces/habitica-mcp-server",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "biomejs.biome"
+      ],
+      "settings": {
+        "editor.defaultFormatter": "biomejs.biome",
+        "editor.formatOnSave": true
+      }
+    }
+  },
+  "remoteUser": "vscode"
+}
