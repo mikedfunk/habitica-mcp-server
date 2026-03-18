@@ -1,14 +1,14 @@
-import { describe, it, expect, mock, beforeEach } from 'bun:test';
+import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import {
-  getUserProfile,
-  getStats,
-  getInventory,
-  castSpell,
-  toggleSleep,
-  revive,
   allocateStat,
+  castSpell,
+  getInventory,
+  getStats,
+  getUserProfile,
+  revive,
+  toggleSleep,
 } from '../../src/tools/handlers/user.js';
-import { setupMockEnv, createUserMock } from '../utils/mock-fetch.js';
+import { createUserMock, setupMockEnv } from '../utils/mock-fetch.js';
 
 const mockFetch = mock(async (url: string, options?: RequestInit) => {
   return new Response(JSON.stringify({ success: true, data: {} }), {
@@ -28,11 +28,12 @@ describe('User Handlers', () => {
   describe('getUserProfile', () => {
     it('fetches and returns user profile data', async () => {
       const userMock = createUserMock();
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: userMock }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: userMock }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await getUserProfile();
@@ -47,11 +48,12 @@ describe('User Handlers', () => {
   describe('getStats', () => {
     it('fetches and returns user stats', async () => {
       const userMock = createUserMock();
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: userMock }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: userMock }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await getStats();
@@ -75,18 +77,19 @@ describe('User Handlers', () => {
             costume: {},
             owned: {},
           },
-          food: { 'Meat': 3 },
-          hatchingPotions: { 'Base': 2 },
-          eggs: { 'Wolf': 1 },
+          food: { Meat: 3 },
+          hatchingPotions: { Base: 2 },
+          eggs: { Wolf: 1 },
           quests: {},
           special: {},
         },
       });
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: userMock }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: userMock }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await getInventory();
@@ -99,11 +102,12 @@ describe('User Handlers', () => {
 
   describe('castSpell', () => {
     it('casts a spell without target', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: {} }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: {} }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await castSpell('fireball');
@@ -115,11 +119,12 @@ describe('User Handlers', () => {
     });
 
     it('casts a spell with target', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: {} }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: {} }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       await castSpell('blessing', 'target-user-id');
@@ -131,11 +136,12 @@ describe('User Handlers', () => {
 
   describe('toggleSleep', () => {
     it('returns sleeping message when user goes to sleep', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: true }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: true }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await toggleSleep();
@@ -145,11 +151,12 @@ describe('User Handlers', () => {
     });
 
     it('returns wake message when user wakes up', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: false }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: false }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await toggleSleep();
@@ -160,11 +167,12 @@ describe('User Handlers', () => {
 
   describe('revive', () => {
     it('revives the user', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: {} }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: {} }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await revive();
@@ -194,11 +202,12 @@ describe('User Handlers', () => {
         class: 'warrior',
         points: 0,
       };
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: updatedStats }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: updatedStats }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await allocateStat('str');
@@ -212,11 +221,18 @@ describe('User Handlers', () => {
 
     it('allocates stat points to different attributes', async () => {
       const stats = { str: 5, int: 6, con: 5, per: 5 };
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: { ...createUserMock().stats, ...stats, int: 6 } }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(
+            JSON.stringify({
+              success: true,
+              data: { ...createUserMock().stats, ...stats, int: 6 },
+            }),
+            {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' },
+            },
+          ),
       );
 
       await allocateStat('int');

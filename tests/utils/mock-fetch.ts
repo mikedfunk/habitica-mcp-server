@@ -8,7 +8,7 @@ export interface MockResponse {
 }
 
 export function createMockFetch(defaultResponse: MockResponse = { success: true, data: {} }) {
-  const mockFetch = mock(async (url: string, options?: RequestInit) => {
+  const mockFetch = mock(async (_url: string, _options?: RequestInit) => {
     return new Response(JSON.stringify(defaultResponse), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
@@ -19,9 +19,9 @@ export function createMockFetch(defaultResponse: MockResponse = { success: true,
 }
 
 export function setupMockEnv() {
-  process.env['HABITICA_USER_ID'] = 'test-user-id';
-  process.env['HABITICA_API_TOKEN'] = 'test-api-token';
-  process.env['MCP_LANG'] = 'en';
+  process.env.HABITICA_USER_ID = 'test-user-id';
+  process.env.HABITICA_API_TOKEN = 'test-api-token';
+  process.env.MCP_LANG = 'en';
 }
 
 export function createTaskMock(id: string, text: string, type: string, overrides = {}) {

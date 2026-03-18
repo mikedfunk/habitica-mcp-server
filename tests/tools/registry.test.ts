@@ -1,8 +1,8 @@
-import { describe, it, expect, mock, beforeEach } from 'bun:test';
+import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import { toolRegistry } from '../../src/tools/registry.js';
-import { setupMockEnv, createTaskMock, createUserMock } from '../utils/mock-fetch.js';
+import { createTaskMock, createUserMock, setupMockEnv } from '../utils/mock-fetch.js';
 
-const mockFetch = mock(async (url: string, options?: RequestInit) => {
+const mockFetch = mock(async (_url: string, _options?: RequestInit) => {
   return new Response(JSON.stringify({ success: true, data: {} }), {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
@@ -68,14 +68,15 @@ describe('Tool Registry', () => {
 
   describe('task handlers', () => {
     it('get_tasks handler works', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: [] }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: [] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
-      const result = await toolRegistry['get_tasks']({ type: 'todos' });
+      const result = await toolRegistry.get_tasks({ type: 'todos' });
 
       expect(mockFetch).toHaveBeenCalledTimes(1);
       expect(result.content[0].type).toBe('text');
@@ -83,30 +84,35 @@ describe('Tool Registry', () => {
 
     it('create_task handler works', async () => {
       const taskMock = createTaskMock('new-id', 'New Task', 'todo');
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: taskMock }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: taskMock }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
-      const result = await toolRegistry['create_task']({ type: 'todo', text: 'New Task' });
+      const result = await toolRegistry.create_task({ type: 'todo', text: 'New Task' });
 
       expect(result.content[0].text).toContain('Successfully created task');
     });
 
     it('score_task handler works with direction', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({
-          success: true,
-          data: { exp: 10, gp: 5, hp: 50, lvl: 1, mp: 100, _tmp: {} }
-        }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(
+            JSON.stringify({
+              success: true,
+              data: { exp: 10, gp: 5, hp: 50, lvl: 1, mp: 100, _tmp: {} },
+            }),
+            {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' },
+            },
+          ),
       );
 
-      const result = await toolRegistry['score_task']({ taskId: 'task-1', direction: 'up' });
+      const result = await toolRegistry.score_task({ taskId: 'task-1', direction: 'up' });
 
       expect(result.content[0].text).toContain('Task scored');
     });
@@ -115,28 +121,30 @@ describe('Tool Registry', () => {
   describe('user handlers', () => {
     it('get_user_profile handler works', async () => {
       const userMock = createUserMock();
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: userMock }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: userMock }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
-      const result = await toolRegistry['get_user_profile']({});
+      const result = await toolRegistry.get_user_profile({});
 
       expect(result.content[0].text).toContain('Test User');
     });
 
     it('get_stats handler works', async () => {
       const userMock = createUserMock();
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: userMock }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: userMock }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
-      const result = await toolRegistry['get_stats']({});
+      const result = await toolRegistry.get_stats({});
 
       expect(result.content[0].text).toContain('hp');
     });
@@ -150,27 +158,29 @@ describe('Tool Registry', () => {
           pets: { 'Wolf-Base': 5 },
         },
       });
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: userMock }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: userMock }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
-      const result = await toolRegistry['get_pets']({});
+      const result = await toolRegistry.get_pets({});
 
       expect(result.content[0].text).toContain('Wolf-Base');
     });
 
     it('feed_pet handler works', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: {} }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: {} }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
-      const result = await toolRegistry['feed_pet']({ pet: 'Wolf-Base', food: 'Meat' });
+      const result = await toolRegistry.feed_pet({ pet: 'Wolf-Base', food: 'Meat' });
 
       expect(result.content[0].text).toContain('Successfully fed pet');
     });
@@ -178,27 +188,29 @@ describe('Tool Registry', () => {
 
   describe('tag handlers', () => {
     it('get_tags handler works', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: [{ id: 'tag-1', name: 'Work' }] }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: [{ id: 'tag-1', name: 'Work' }] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
-      const result = await toolRegistry['get_tags']({});
+      const result = await toolRegistry.get_tags({});
 
       expect(result.content[0].text).toContain('Work');
     });
 
     it('create_tag handler works', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: { id: 'tag-new', name: 'Health' } }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: { id: 'tag-new', name: 'Health' } }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
-      const result = await toolRegistry['create_tag']({ name: 'Health' });
+      const result = await toolRegistry.create_tag({ name: 'Health' });
 
       expect(result.content[0].text).toContain('Successfully created tag');
     });
@@ -206,27 +218,29 @@ describe('Tool Registry', () => {
 
   describe('shop handlers', () => {
     it('get_shop handler works', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: { identifier: 'market' } }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: { identifier: 'market' } }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
-      const result = await toolRegistry['get_shop']({ shopType: 'market' });
+      const result = await toolRegistry.get_shop({ shopType: 'market' });
 
       expect(result.content[0].text).toContain('market');
     });
 
     it('buy_item handler works', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: { gp: 90 } }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: { gp: 90 } }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
-      const result = await toolRegistry['buy_item']({ itemKey: 'potion', quantity: 2 });
+      const result = await toolRegistry.buy_item({ itemKey: 'potion', quantity: 2 });
 
       expect(result.content[0].text).toContain('Successfully bought');
     });
@@ -237,14 +251,15 @@ describe('Tool Registry', () => {
       const taskMock = createTaskMock('task-1', 'Task', 'todo', {
         checklist: [{ id: 'item-1', text: 'Item', completed: false }],
       });
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: taskMock }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: taskMock }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
-      const result = await toolRegistry['get_task_checklist']({ taskId: 'task-1' });
+      const result = await toolRegistry.get_task_checklist({ taskId: 'task-1' });
 
       expect(result.content[0].text).toContain('Task:');
     });
@@ -252,27 +267,32 @@ describe('Tool Registry', () => {
 
   describe('social handlers', () => {
     it('get_groups handler works', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: [] }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: [] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
-      const result = await toolRegistry['get_groups']({ type: 'party' });
+      const _result = await toolRegistry.get_groups({ type: 'party' });
 
       expect(mockFetch).toHaveBeenCalledTimes(1);
     });
 
     it('get_party handler works', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: { id: 'party-1', name: 'My Party' } }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(
+            JSON.stringify({ success: true, data: { id: 'party-1', name: 'My Party' } }),
+            {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' },
+            },
+          ),
       );
 
-      const result = await toolRegistry['get_party']({});
+      const result = await toolRegistry.get_party({});
 
       expect(result.content[0].text).toContain('My Party');
     });
@@ -280,41 +300,44 @@ describe('Tool Registry', () => {
 
   describe('utility handlers', () => {
     it('toggle_sleep handler works', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: true }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: true }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
-      const result = await toolRegistry['toggle_sleep']({});
+      const result = await toolRegistry.toggle_sleep({});
 
       expect(result.content[0].text).toContain('resting');
     });
 
     it('revive handler works', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: {} }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: {} }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
-      const result = await toolRegistry['revive']({});
+      const result = await toolRegistry.revive({});
 
       expect(result.content[0].text).toContain('Successfully revived');
     });
 
     it('allocate_stat handler works', async () => {
       const stats = { ...createUserMock().stats, str: 6 };
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: stats }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: stats }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
-      const result = await toolRegistry['allocate_stat']({ stat: 'str' });
+      const result = await toolRegistry.allocate_stat({ stat: 'str' });
 
       expect(result.content[0].text).toContain('str');
     });

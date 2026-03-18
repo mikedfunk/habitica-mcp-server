@@ -1,12 +1,12 @@
-import { describe, it, expect, mock, beforeEach } from 'bun:test';
+import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import {
-  getTaskChecklist,
   addChecklistItem,
-  updateChecklistItem,
   deleteChecklistItem,
+  getTaskChecklist,
   scoreChecklistItem,
+  updateChecklistItem,
 } from '../../src/tools/handlers/checklist.js';
-import { setupMockEnv, createTaskMock } from '../utils/mock-fetch.js';
+import { createTaskMock, setupMockEnv } from '../utils/mock-fetch.js';
 
 const mockFetch = mock(async (url: string, options?: RequestInit) => {
   return new Response(JSON.stringify({ success: true, data: {} }), {
@@ -31,11 +31,12 @@ describe('Checklist Handlers', () => {
           { id: 'item-2', text: 'Second item', completed: false },
         ],
       });
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: taskWithChecklist }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: taskWithChecklist }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await getTaskChecklist('task-1');
@@ -50,11 +51,12 @@ describe('Checklist Handlers', () => {
       const taskWithoutChecklist = createTaskMock('task-2', 'Empty task', 'todo', {
         checklist: [],
       });
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: taskWithoutChecklist }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: taskWithoutChecklist }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await getTaskChecklist('task-2');
@@ -68,11 +70,12 @@ describe('Checklist Handlers', () => {
       const updatedTask = createTaskMock('task-1', 'My Task', 'todo', {
         checklist: [{ id: 'new-item', text: 'New checklist item', completed: false }],
       });
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: updatedTask }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: updatedTask }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await addChecklistItem('task-1', 'New checklist item');
@@ -90,11 +93,12 @@ describe('Checklist Handlers', () => {
   describe('updateChecklistItem', () => {
     it('updates checklist item text', async () => {
       const updatedTask = createTaskMock('task-1', 'My Task', 'todo');
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: updatedTask }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: updatedTask }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await updateChecklistItem('task-1', 'item-1', { text: 'Updated text' });
@@ -110,11 +114,12 @@ describe('Checklist Handlers', () => {
 
     it('updates checklist item completion status', async () => {
       const updatedTask = createTaskMock('task-1', 'My Task', 'todo');
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: updatedTask }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: updatedTask }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       await updateChecklistItem('task-1', 'item-1', { completed: true });
@@ -127,11 +132,12 @@ describe('Checklist Handlers', () => {
 
   describe('deleteChecklistItem', () => {
     it('deletes a checklist item', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: {} }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: {} }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await deleteChecklistItem('task-1', 'item-1');
@@ -147,15 +153,14 @@ describe('Checklist Handlers', () => {
   describe('scoreChecklistItem', () => {
     it('scores/toggles a checklist item', async () => {
       const updatedTask = createTaskMock('task-1', 'My Task', 'todo', {
-        checklist: [
-          { id: 'item-1', text: 'Checklist item', completed: true },
-        ],
+        checklist: [{ id: 'item-1', text: 'Checklist item', completed: true }],
       });
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: updatedTask }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: updatedTask }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await scoreChecklistItem('task-1', 'item-1');
@@ -172,11 +177,12 @@ describe('Checklist Handlers', () => {
       const taskWithoutItem = createTaskMock('task-1', 'My Task', 'todo', {
         checklist: [],
       });
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: taskWithoutItem }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: taskWithoutItem }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await scoreChecklistItem('task-1', 'item-1');

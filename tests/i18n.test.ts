@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from 'bun:test';
-import { setLanguage, getLanguage, t } from '../src/i18n.ts';
+import { beforeEach, describe, expect, it } from 'bun:test';
+import { getLanguage, setLanguage, t } from '../src/i18n.ts';
 
 describe('i18n helper', () => {
   beforeEach(() => {

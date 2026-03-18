@@ -1,7 +1,7 @@
 import { fetchHabiticaApiResponse } from '../../client.js';
 import { t } from '../../i18n.js';
-import type { ToolResult } from '../types.js';
 import type { HabiticaUser, UserStats } from '../../types.js';
+import type { ToolResult } from '../types.js';
 
 export async function getUserProfile(): Promise<ToolResult> {
   const apiResponse = await fetchHabiticaApiResponse<HabiticaUser>('GET', '/user');
@@ -81,7 +81,10 @@ export async function revive(): Promise<ToolResult> {
     content: [
       {
         type: 'text',
-        text: t('Successfully revived! Lost some stats but back alive.', '成功复活！失去了一些属性但已恢复生命。'),
+        text: t(
+          'Successfully revived! Lost some stats but back alive.',
+          '成功复活！失去了一些属性但已恢复生命。',
+        ),
       },
     ],
   };
@@ -90,7 +93,7 @@ export async function revive(): Promise<ToolResult> {
 export async function allocateStat(stat: string): Promise<ToolResult> {
   const apiResponse = await fetchHabiticaApiResponse<UserStats>(
     'POST',
-    `/user/allocate?stat=${stat}`
+    `/user/allocate?stat=${stat}`,
   );
   const stats = apiResponse.data;
 
@@ -100,7 +103,7 @@ export async function allocateStat(stat: string): Promise<ToolResult> {
         type: 'text',
         text: t(
           `Successfully allocated point to ${stat}. New stats:\n${JSON.stringify(stats, null, 2)}`,
-          `成功将属性点分配给 ${stat}。新属性:\n${JSON.stringify(stats, null, 2)}`
+          `成功将属性点分配给 ${stat}。新属性:\n${JSON.stringify(stats, null, 2)}`,
         ),
       },
     ],

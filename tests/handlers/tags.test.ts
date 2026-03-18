@@ -1,11 +1,11 @@
-import { describe, it, expect, mock, beforeEach } from 'bun:test';
+import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import {
-  getTags,
-  createTag,
   addTagToTask,
+  createTag,
+  deleteTag,
+  getTags,
   removeTagFromTask,
   updateTag,
-  deleteTag,
 } from '../../src/tools/handlers/tags.js';
 import { setupMockEnv } from '../utils/mock-fetch.js';
 
@@ -31,11 +31,12 @@ describe('Tags Handlers', () => {
         { id: 'tag-2', name: 'Personal' },
         { id: 'tag-3', name: 'Urgent' },
       ];
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: tags }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: tags }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await getTags();
@@ -49,11 +50,12 @@ describe('Tags Handlers', () => {
   describe('createTag', () => {
     it('creates a new tag', async () => {
       const newTag = { id: 'tag-new', name: 'Health' };
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: newTag }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: newTag }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await createTag('Health');
@@ -71,11 +73,12 @@ describe('Tags Handlers', () => {
 
   describe('addTagToTask', () => {
     it('adds a tag to a task', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: {} }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: {} }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await addTagToTask('task-123', 'tag-1');
@@ -90,11 +93,12 @@ describe('Tags Handlers', () => {
 
   describe('removeTagFromTask', () => {
     it('removes a tag from a task', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: {} }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: {} }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await removeTagFromTask('task-123', 'tag-1');
@@ -110,11 +114,12 @@ describe('Tags Handlers', () => {
   describe('updateTag', () => {
     it('updates a tag name', async () => {
       const updatedTag = { id: 'tag-1', name: 'Work Tasks' };
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: updatedTag }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: updatedTag }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await updateTag('tag-1', 'Work Tasks');
@@ -131,11 +136,12 @@ describe('Tags Handlers', () => {
 
   describe('deleteTag', () => {
     it('deletes a tag', async () => {
-      mockFetch.mockImplementationOnce(async () =>
-        new Response(JSON.stringify({ success: true, data: {} }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+      mockFetch.mockImplementationOnce(
+        async () =>
+          new Response(JSON.stringify({ success: true, data: {} }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       );
 
       const result = await deleteTag('tag-1');

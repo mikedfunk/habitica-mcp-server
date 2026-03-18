@@ -44,14 +44,14 @@ cd habitica-mcp-server
 
 2. **安装依赖**
 ```bash
-npm install
+bun install
 ```
 
 3. **配置 API 凭据** (见下方配置章节)
 
 4. **启动服务器**
 ```bash
-npm start
+bun run start
 ```
 
 ## ⚙️ 配置
@@ -86,10 +86,10 @@ HABITICA_API_TOKEN=your-api-token-here
 ### 启动服务器
 ```bash
 # 生产环境
-npm start
+bun run start
 
 # 开发环境 (支持热重载)
-npm run dev
+bun run dev
 ```
 
 ### 与 MCP 客户端集成
@@ -100,7 +100,7 @@ npm run dev
 {
   "mcpServers": {
     "habitica-mcp-server": {
-      "command": "npx",
+      "command": "bunx",
       "args": ["-y", "habitica-mcp-server"],
       "env": {
         "HABITICA_USER_ID": "your-id",
@@ -296,7 +296,7 @@ AI: "恭喜！我来为您记录锻炼完成情况..."
 ### 调试模式
 ```bash
 # 启用详细日志
-DEBUG=* npm start
+DEBUG=* bun run start
 ```
 
 ### 获取帮助

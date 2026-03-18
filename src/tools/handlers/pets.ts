@@ -1,7 +1,7 @@
 import { fetchHabiticaApiResponse } from '../../client.js';
 import { t } from '../../i18n.js';
+import type { EquipType, HabiticaUser } from '../../types.js';
 import type { ToolResult } from '../types.js';
-import type { HabiticaUser, EquipType } from '../../types.js';
 
 export async function getPets(): Promise<ToolResult> {
   const apiResponse = await fetchHabiticaApiResponse<HabiticaUser>('GET', '/user');
@@ -19,7 +19,7 @@ export async function getPets(): Promise<ToolResult> {
 export async function feedPet(pet: string, food: string): Promise<ToolResult> {
   const apiResponse = await fetchHabiticaApiResponse<{ message?: string }>(
     'POST',
-    `/user/feed/${pet}/${food}`
+    `/user/feed/${pet}/${food}`,
   );
   const result = apiResponse.data;
 
@@ -47,7 +47,7 @@ export async function hatchPet(egg: string, hatchingPotion: string): Promise<Too
         type: 'text',
         text: t(
           `Successfully hatched pet! Got ${egg}-${hatchingPotion}`,
-          `成功孵化宠物! 获得了 ${egg}-${hatchingPotion}`
+          `成功孵化宠物! 获得了 ${egg}-${hatchingPotion}`,
         ),
       },
     ],

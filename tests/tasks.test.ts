@@ -1,4 +1,4 @@
-import { describe, it, expect, mock, beforeEach } from 'bun:test';
+import { beforeEach, describe, expect, it, mock } from 'bun:test';
 
 // Mock the fetch function
 const mockFetch = mock(async (url: string, options?: RequestInit) => {
@@ -46,11 +46,12 @@ describe('fetchHabiticaApiResponse', () => {
   });
 
   it('throws an error when the Habitica API responds with a failure status', async () => {
-    mockFetch.mockImplementationOnce(async () =>
-      new Response(JSON.stringify({ message: 'Not authorized' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' },
-      })
+    mockFetch.mockImplementationOnce(
+      async () =>
+        new Response(JSON.stringify({ message: 'Not authorized' }), {
+          status: 401,
+          headers: { 'Content-Type': 'application/json' },
+        }),
     );
 
     const { fetchHabiticaApiResponse } = await import('../src/client.ts');

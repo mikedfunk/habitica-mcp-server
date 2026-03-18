@@ -1,7 +1,7 @@
 import { fetchHabiticaApiResponse } from '../../client.js';
 import { t } from '../../i18n.js';
-import type { ToolResult } from '../types.js';
 import type { ShopType } from '../../types.js';
+import type { ToolResult } from '../types.js';
 
 export async function getShop(shopType: ShopType = 'market'): Promise<ToolResult> {
   const apiResponse = await fetchHabiticaApiResponse<unknown>('GET', `/shops/${shopType}`);
@@ -20,7 +20,7 @@ export async function buyItem(itemKey: string, quantity = 1): Promise<ToolResult
   const apiResponse = await fetchHabiticaApiResponse<{ gp: number }>(
     'POST',
     `/user/buy/${itemKey}`,
-    { quantity }
+    { quantity },
   );
   const result = apiResponse.data;
 
@@ -30,7 +30,7 @@ export async function buyItem(itemKey: string, quantity = 1): Promise<ToolResult
         type: 'text',
         text: t(
           `Successfully bought ${itemKey} x${quantity}! Remaining gold: ${result.gp}`,
-          `成功购买 ${itemKey} x${quantity}! 剩余金币: ${result.gp}`
+          `成功购买 ${itemKey} x${quantity}! 剩余金币: ${result.gp}`,
         ),
       },
     ],
@@ -47,7 +47,7 @@ export async function buyReward(key: string): Promise<ToolResult> {
         type: 'text',
         text: t(
           `Successfully bought reward! Remaining gold: ${result.gp}`,
-          `成功购买奖励! 剩余金币: ${result.gp}`
+          `成功购买奖励! 剩余金币: ${result.gp}`,
         ),
       },
     ],
@@ -76,7 +76,7 @@ export async function readNotification(notificationId: string): Promise<ToolResu
         type: 'text',
         text: t(
           `Successfully marked notification as read (ID: ${notificationId})`,
-          `成功标记通知为已读 (ID: ${notificationId})`
+          `成功标记通知为已读 (ID: ${notificationId})`,
         ),
       },
     ],
