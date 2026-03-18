@@ -4,7 +4,10 @@ import type { HabiticaNotification } from '../../types.js';
 import type { ToolResult } from '../types.js';
 
 export async function getNotifications(): Promise<ToolResult> {
-  const apiResponse = await fetchHabiticaApiResponse<HabiticaNotification[]>('GET', '/notifications');
+  const apiResponse = await fetchHabiticaApiResponse<HabiticaNotification[]>(
+    'GET',
+    '/notifications',
+  );
 
   return {
     content: [
@@ -17,7 +20,10 @@ export async function getNotifications(): Promise<ToolResult> {
 }
 
 export async function readNotification(notificationId: string): Promise<ToolResult> {
-  await fetchHabiticaApiResponse<Record<string, never>>('POST', `/notifications/${notificationId}/read`);
+  await fetchHabiticaApiResponse<Record<string, never>>(
+    'POST',
+    `/notifications/${notificationId}/read`,
+  );
 
   return {
     content: [
