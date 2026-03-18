@@ -516,6 +516,42 @@ const tools = [
     },
   },
   {
+    name: 'add_tag_to_task',
+    description: t('Add a tag to a task', '向任务添加标签'),
+    inputSchema: {
+      type: 'object',
+      properties: {
+        taskId: {
+          type: 'string',
+          description: t('Task ID', '任务ID'),
+        },
+        tagId: {
+          type: 'string',
+          description: t('Tag ID', '标签ID'),
+        },
+      },
+      required: ['taskId', 'tagId'],
+    },
+  },
+  {
+    name: 'remove_tag_from_task',
+    description: t('Remove a tag from a task', '从任务移除标签'),
+    inputSchema: {
+      type: 'object',
+      properties: {
+        taskId: {
+          type: 'string',
+          description: t('Task ID', '任务ID'),
+        },
+        tagId: {
+          type: 'string',
+          description: t('Tag ID', '标签ID'),
+        },
+      },
+      required: ['taskId', 'tagId'],
+    },
+  },
+  {
     name: 'update_tag',
     description: t('Update tag name', '更新标签名称'),
     inputSchema: {
@@ -635,10 +671,12 @@ const tools = [
 interface ToolContent {
   type: 'text';
   text: string;
+  [key: string]: unknown;
 }
 
 interface ToolResult {
   content: ToolContent[];
+  [key: string]: unknown;
 }
 
 server.setRequestHandler(ListToolsRequestSchema, async () => {
@@ -697,6 +735,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       case 'create_tag':
         return await createTag(toolArgs['name'] as string);
+
+      case 'add_tag_to_task':
+        return await addTagToTask(toolArgs['taskId'] as string, toolArgs['tagId'] as string);
+
+      case 'remove_tag_from_task':
+        return await removeTagFromTask(toolArgs['taskId'] as string, toolArgs['tagId'] as string);
 
       case 'update_tag':
         return await updateTag(toolArgs['tagId'] as string, toolArgs['name'] as string);
@@ -983,6 +1027,38 @@ async function createTag(name: string): Promise<ToolResult> {
         text: t(
           `Successfully created tag: ${tag.name} (ID: ${tag.id})`,
           `成功创建标签: ${tag.name} (ID: ${tag.id})`
+        ),
+      },
+    ],
+  };
+}
+
+async function addTagToTask(taskId: string, tagId: string): Promise<ToolResult> {
+  await fetchHabiticaApiResponse<unknown>('POST', `/tasks/${taskId}/tags/${tagId}`);
+
+  return {
+    content: [
+      {
+        type: 'text',
+        text: t(
+          `Successfully added tag (ID: ${tagId}) to task (ID: ${taskId})`,
+          `成功将标签 (ID: ${tagId}) 添加到任务 (ID: ${taskId})`
+        ),
+      },
+    ],
+  };
+}
+
+async function removeTagFromTask(taskId: string, tagId: string): Promise<ToolResult> {
+  await fetchHabiticaApiResponse<unknown>('DELETE', `/tasks/${taskId}/tags/${tagId}`);
+
+  return {
+    content: [
+      {
+        type: 'text',
+        text: t(
+          `Successfully removed tag (ID: ${tagId}) from task (ID: ${taskId})`,
+          `成功从任务 (ID: ${taskId}) 移除标签 (ID: ${tagId})`
         ),
       },
     ],
