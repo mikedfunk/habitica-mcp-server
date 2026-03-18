@@ -25,24 +25,7 @@
     "@modelcontextprotocol/sdk": "^1.27.1",
     "zod": "^4.3.6"
   },
-  "keywords": [
-    "mcp",
-    "habitica",
-    "productivity",
-    "habits",
-    "ai",
-    "task-management",
-    "rpg",
-    "model-context-protocol",
-    "claude",
-    "assistant",
-    "automation",
-    "gamification"
-  ],
-  "author": {
-    "name": "Breaker",
-    "email": "breakerr@qq.com"
-  },
+  "author": "Mike Funk",
   "license": "MIT",
   "homepage": "https://github.com/mikedfunk/habitica-mcp-server#readme",
   "repository": {
@@ -51,16 +34,6 @@
   },
   "bugs": {
     "url": "https://github.com/mikedfunk/habitica-mcp-server/issues"
-  },
-  "files": [
-    "src/",
-    "README.md",
-    "README.zh-CN.md",
-    "LICENSE",
-    "FEATURES.md"
-  ],
-  "publishConfig": {
-    "access": "public"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.8",
