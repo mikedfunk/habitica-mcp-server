@@ -27,6 +27,9 @@ function buildRequestHeaders(): {
   };
 }
 
+/**
+ * @throws {HabiticaApiError} When the API returns an error response
+ */
 export async function fetchHabiticaApiResponse<T>(
   method: string,
   path: string,

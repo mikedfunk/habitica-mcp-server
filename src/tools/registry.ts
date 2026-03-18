@@ -44,6 +44,9 @@ import type { ToolResult } from './types.js';
 
 export type ToolHandler = (args: Record<string, unknown>) => Promise<ToolResult>;
 
+/**
+ * @throws {ValidationError} When arguments fail validation
+ */
 function validateArgs<T>(toolName: string, args: Record<string, unknown>): T {
   const schema = ToolArgsSchemas[toolName as keyof typeof ToolArgsSchemas];
   if (!schema) {
