@@ -8,8 +8,8 @@ import {
   scoreChecklistItem,
   updateChecklistItem,
 } from './handlers/checklist.js';
-import { equipItem, feedPet, getMounts, getPets, hatchPet } from './handlers/pets.js';
 import { getNotifications, readNotification } from './handlers/notifications.js';
+import { equipItem, feedPet, getMounts, getPets, hatchPet } from './handlers/pets.js';
 import { buyItem, buyReward, getShop } from './handlers/shop.js';
 import { getGroups, getInbox, getParty, sendPrivateMessage } from './handlers/social.js';
 import {
@@ -134,10 +134,7 @@ export const toolRegistry: Record<string, ToolHandler> = {
   },
 
   remove_tag_from_task: async (args) => {
-    const validated = validateArgs<{ taskId: string; tagId: string }>(
-      'remove_tag_from_task',
-      args,
-    );
+    const validated = validateArgs<{ taskId: string; tagId: string }>('remove_tag_from_task', args);
     return removeTagFromTask(validated.taskId, validated.tagId);
   },
 

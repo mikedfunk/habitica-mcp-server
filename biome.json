@@ -72,6 +72,12 @@
         "rules": {
           "suspicious": {
             "noConsole": "off"
+          },
+          "correctness": {
+            "noUnusedFunctionParameters": "off"
+          },
+          "complexity": {
+            "useLiteralKeys": "off"
           }
         }
       }
